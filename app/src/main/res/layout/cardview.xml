@@ -22,7 +22,7 @@
                 android:id="@+id/person_photo"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="20dp"
                 />
 
             <TextView
