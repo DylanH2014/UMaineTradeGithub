@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">UMaineTrade</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!--Login Page Strings-->
+    <string name="EmailEditTextHint">Enter your email.</string>
+    <string name="PasswordEditTextHint">Enter your password.</string>
+
+    <string name="LoginButtonText">Login</string>
+    <string name="ForgotButtonText">Forgot password?</string>
+    <string name="title_activity_signup">Signup</string>
+
+
+    <!--Sign Up Page Strings-->
+
+    <string name="FirstNameTV">First Name</string>
+    <string name="FirstNameETHint">Enter your first name.</string>
+
+    <string name="LastNameTV">Last Name</string>
+    <string name="LastNameETHint">Enter your last name</string>
+
+    <string name="EmailTV">Email</string>
+    <string name="EmailETHint">Enter your email</string>
+
+    <string name="PasswordTV">Password</string>
+    <string name="PasswordETHint">Enter your password</string>
+
+
+    <string name="SignUpButtonText">Sign up</string>
+
+    <string name="ItemNameTV">Item</string>
+    <string name="ItemNameETHint">Item name</string>
+
+    <string name="ItemPriceTV">Price</string>
+    <string name="ItemPriceETHint">Price of the item</string>
+
+    <string name="ItemConditionTV">Condition</string>
+    <string name="ItemConditionETHint">Enter your email</string>
+
+    <string name="NewCondition">New</string>
+    <string name="UsedCondition">Used</string>
+
+    <string name="ItemDescriptionTV">Description</string>
+    <string name="ItemDescriptionETHint">Enter the description of the item here</string>
+
+    <string name="ListButton">Add to Listings</string>
+    <string name="CategoriesTV">Categories</string>
+
+    <string-array name="Categories_Array">
+        <item>Electronics</item>
+        <item>Textbooks</item>
+        <item>Clothing</item>
+        <item>Furniture</item>
+        <item>Miscellaneous</item>
+
+    </string-array>
+    <string name="title_activity_add_listings">Add New Listing</string>
+
+    <string name="scan">Scan a Book</string>
+    <string name="thumb">Book Thumbnail</string>
+    <string name="pre">Preview</string>
+    <string name="link">Web</string>>
+
+
+
+
+
+
+
+</resources>

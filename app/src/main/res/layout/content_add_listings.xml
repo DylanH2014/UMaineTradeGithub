@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.abhinav.dylan.umainetrade.AddListings"
+    tools:showIn="@layout/activity_add_listings"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ItemNameTV"
+        android:text="@string/ItemNameTV"
+        />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ItemNameET"
+        android:hint="@string/ItemNameETHint"
+        />
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ItemPriceTV"
+        android:text="@string/ItemPriceTV"
+
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ItemPriceET"
+        android:hint="@string/ItemPriceETHint"
+
+        />
+
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ItemConditionTV"
+        android:text="@string/ItemConditionTV"
+
+        />
+
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="left">
+        <RadioButton android:id="@+id/NewConditionRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/NewCondition"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/UsedConditionRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/UsedCondition"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CategoriesTV"
+        android:text="@string/CategoriesTV"
+
+        />
+    <Spinner
+        android:id="@+id/Spinner_Categories"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/DescriptionTV"
+        android:text="@string/ItemDescriptionTV"
+
+        />
+
+    <EditText
+        android:id="@+id/itemDescriptionET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ItemDescriptionETHint"
+        android:inputType="textMultiLine"
+        android:maxLength="2000"
+        android:maxLines="4" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ListButton"
+        android:text="@string/ListButton"
+        android:onClick="addNewListing"
+
+        />
+
+
+</LinearLayout>
