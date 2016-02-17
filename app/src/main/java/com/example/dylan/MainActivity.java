@@ -36,6 +36,7 @@ package com.example.dylan;
         import android.widget.Toast;
 
         import com.R;
+        import com.abhinav.dylan.umainetrade.AddListings;
         import com.google.zxing.IntentIntegrator;
         import com.google.zxing.IntentResult;
 /**
@@ -49,7 +50,7 @@ package com.example.dylan;
 public class MainActivity extends Activity implements OnClickListener {
 
     //scan, preview, link buttons
-    private Button scanBtn, previewBtn, linkBtn;
+    private Button scanBtn, previewBtn, linkBtn, linkToListingsBtn;
     //author, title, description, date and rating count text views
     private TextView authorText, titleText, descriptionText, dateText, ratingCountText;
     //layout for star rating
@@ -61,6 +62,8 @@ public class MainActivity extends Activity implements OnClickListener {
     //thumbnail bitmap
     private Bitmap thumbImg;
 
+    private String listingTitle, listingAuthor, listingDesc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,8 @@ public class MainActivity extends Activity implements OnClickListener {
         scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
 
+
+
         //preview and link buttons
         previewBtn = (Button)findViewById(R.id.preview_btn);
         previewBtn.setVisibility(View.GONE);
@@ -76,6 +81,11 @@ public class MainActivity extends Activity implements OnClickListener {
         linkBtn = (Button)findViewById(R.id.link_btn);
         linkBtn.setVisibility(View.GONE);
         linkBtn.setOnClickListener(this);
+
+        //linkToListingsBtn = (Button) findViewById(R.id.link_to_listings);
+        //linkToListingsBtn.setVisibility(View.GONE);
+       // linkToListingsBtn.setOnClickListener(this);
+
 
         //ui items
         authorText = (TextView)findViewById(R.id.book_author);
@@ -101,6 +111,17 @@ public class MainActivity extends Activity implements OnClickListener {
             descriptionText.setText(savedInstanceState.getString("description"));
             dateText.setText(savedInstanceState.getString("date"));
             ratingCountText.setText(savedInstanceState.getString("ratings"));
+
+            //listingAuthor = savedInstanceState.getString("author");
+           // Toast.makeText(MainActivity.this, listingAuthor, Toast.LENGTH_SHORT).show();
+            //listingTitle = savedInstanceState.getString("title");
+            //Toast.makeText(MainActivity.this, listingTitle, Toast.LENGTH_SHORT).show();
+
+            //listingDesc = savedInstanceState.getString("description");
+            Toast.makeText(MainActivity.this, listingAuthor+listingDesc+listingTitle, Toast.LENGTH_SHORT).show();
+
+
+
             int numStars = savedInstanceState.getInt("stars");//zero if null
             for(int s=0; s<numStars; s++){
                 starViews[s].setImageResource(R.drawable.star);
@@ -140,10 +161,22 @@ public class MainActivity extends Activity implements OnClickListener {
         else if(v.getId()==R.id.preview_btn){
             String tag = (String)v.getTag();
             //launch preview
-            Intent intent = new Intent(this, EmbeddedBook.class);
+            //Intent intent = new Intent(this, EmbeddedBook.class);
+            //intent.putExtra("isbn", tag);
+            //startActivity(intent);
+
+            Intent intent = new Intent(this, AddListings.class);
             intent.putExtra("isbn", tag);
+            intent.putExtra("activityID", "fromMainActivity");
+            intent.putExtra("title", titleText.getText().toString() );
+            intent.putExtra("author", authorText.getText().toString());
+            intent.putExtra("description", descriptionText.getText().toString());
+
             startActivity(intent);
         }
+
+
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -217,7 +250,10 @@ public class MainActivity extends Activity implements OnClickListener {
                 JSONObject bookObject = bookArray.getJSONObject(0);
                 JSONObject volumeObject = bookObject.getJSONObject("volumeInfo");
                 //try for title
-                try{ titleText.setText("TITLE: "+volumeObject.getString("title")); }
+                try{
+                   // listingTitle = volumeObject.getString("title");
+                    titleText.setText("TITLE: "+volumeObject.getString("title"));
+                }
                 catch(JSONException jse){
                     titleText.setText("");
                     jse.printStackTrace();
@@ -230,7 +266,9 @@ public class MainActivity extends Activity implements OnClickListener {
                         if(a>0) authorBuild.append(", ");
                         authorBuild.append(authorArray.getString(a));
                     }
+                    //listingAuthor = authorBuild.toString();
                     authorText.setText("AUTHOR(S): "+authorBuild.toString());
+
                 }
                 catch(JSONException jse){
                     authorText.setText("");
@@ -243,7 +281,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     jse.printStackTrace();
                 }
                 //book description
-                try{ descriptionText.setText("DESCRIPTION: "+volumeObject.getString("description")); }
+                try{
+                    //listingDesc = volumeObject.getString(volumeObject.getString("description"));
+                    descriptionText.setText("DESCRIPTION: " + volumeObject.getString("description"));
+
+                }
                 catch(JSONException jse){
                     descriptionText.setText("");
                     jse.printStackTrace();

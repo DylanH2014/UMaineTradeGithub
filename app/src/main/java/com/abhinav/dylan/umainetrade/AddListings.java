@@ -1,5 +1,6 @@
 package com.abhinav.dylan.umainetrade;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -55,6 +56,10 @@ public class AddListings extends AppCompatActivity {
         this.itemCategory = itemCategory;
     }
 
+    private String getAuthor, getTitle, getDescription;
+
+    private Intent intent;
+
 
 
     @Override
@@ -66,16 +71,21 @@ public class AddListings extends AppCompatActivity {
 
         toolbar.setTitle("Add New Listing");
 
+
+
+
         //Find UI elements
 
         final EditText itemNameET = (EditText) findViewById(R.id.ItemNameET);
 
 
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
+        final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
 
 
 
-        Spinner categoryListSpinner  = (Spinner) findViewById(R.id.Spinner_Categories);
+
+        final Spinner categoryListSpinner  = (Spinner) findViewById(R.id.Spinner_Categories);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Categories_Array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
@@ -85,7 +95,7 @@ public class AddListings extends AppCompatActivity {
         categoryListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch(position){
+                switch (position) {
                     case 0:
                         setItemCategory("Electronics");
                         break;
@@ -110,6 +120,8 @@ public class AddListings extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Please select a category", Toast.LENGTH_SHORT).show();
 
             }
+
+
         });
 
 
@@ -120,14 +132,32 @@ public class AddListings extends AppCompatActivity {
                 setItemName(itemNameET.getText().toString());
                 setItemPrice(itemPriceET.getText().toString());
 
-                Toast.makeText(getApplicationContext(), "Name: "+getItemName()+ "Price: "+ getItemPrice()+ "Condition: "+ getItemCondition()+ "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
 
             }
         });
 
 
 
+        intent = getIntent();
+        if(intent!= null){
+            String checkActivity = intent.getStringExtra("activityID");
+            String tgetAuthor = intent.getStringExtra("author");
+            String tgetTitle = intent.getStringExtra("title");
+            String tgetDescription = intent.getStringExtra("description");
+            Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
+            if (checkActivity.equals("fromMainActivity")){
+
+                itemNameET.setText(tgetTitle);
+                itemDescriptionET.setText("Author is: "+ tgetAuthor + "Description: "+ tgetDescription);
+                categoryListSpinner.setSelection(1);
+
+            }
+
+
+        }
 
     }
 
