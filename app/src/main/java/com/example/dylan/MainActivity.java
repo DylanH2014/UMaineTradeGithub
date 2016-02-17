@@ -28,6 +28,7 @@ package com.example.dylan;
         import android.util.Log;
         import android.view.View;
         import android.view.View.OnClickListener;
+        import android.view.Window;
         import android.widget.Button;
         import android.widget.ImageView;
         import android.widget.LinearLayout;
@@ -84,6 +85,8 @@ public class MainActivity extends Activity implements OnClickListener {
         starLayout = (LinearLayout)findViewById(R.id.star_layout);
         ratingCountText = (TextView)findViewById(R.id.book_rating_count);
         thumbView = (ImageView)findViewById(R.id.thumb);
+
+
 
         //star views
         starViews=new ImageView[5];

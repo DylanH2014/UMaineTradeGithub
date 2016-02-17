@@ -7,19 +7,24 @@ import java.util.List;
  */
 public class Item {
 
-    public int itemId;
+    //public int itemId;
     public String itemName;
     public double itemPrice;
     public String itemOwner;
     public String itemCondition;
+    public String itemCategory;
+
+    public int itemPhoto;
 
 
-    public Item(int itemId, String itemName, double itemPrice, String itemOwner, String itemCondition) {
-        this.itemId = itemId;
+    public Item(String itemName, double itemPrice, String itemCondition, String itemCategory, int itemPhoto ) {
+        // this.itemId = itemId;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
-        this.itemOwner = itemOwner;
+        //this.itemOwner = itemOwner;
         this.itemCondition = itemCondition;
+        this.itemPhoto = itemPhoto;
+        this.itemCategory = itemCategory;
 
     }
 

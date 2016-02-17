@@ -9,35 +9,41 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.R;
+
 import java.util.List;
 
+import Data.Item;
 import Data.Person;
-import com.R;
 
 
 /**
  * Created by abhinav on 1/28/16.
  */
-public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.PersonViewHolder>{
+public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemViewHolder>{
 
-    List<Person> persons;
+    List<Item> items;
+
+
 
     @Override
-    public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview, parent, false);
-        PersonViewHolder pvh = new PersonViewHolder(v);
-        return pvh;
+        ItemViewHolder ivh = new ItemViewHolder(v);
+        return ivh;
     }
 
     @Override
-    public void onBindViewHolder(final PersonViewHolder personViewHolder, final int position) {
-        personViewHolder.personName.setText(persons.get(position).name);
-        personViewHolder.personAge.setText(persons.get(position).age);
-        personViewHolder.personPhoto.setImageResource(persons.get(position).photoId);
-        personViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(final ItemViewHolder itemViewHolder, final int position) {
+        itemViewHolder.itemName.setText(items.get(position).itemName);
+        itemViewHolder.itemPrice.setText(Double.toString(items.get(position).itemPrice));
+        itemViewHolder.itemCondition.setText(items.get(position).itemCondition);
+        itemViewHolder.itemCategory.setText(items.get(position).itemCategory);
+        itemViewHolder.itemPhoto.setImageResource(items.get(position).itemPhoto);
+        itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ListingsPage.listingContext, "Recycle Click" + persons.get(position).name, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListingsPage.listingContext, "Recycle Click" + items.get(position).itemName, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -51,26 +57,31 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.PersonVi
 
     @Override
     public int getItemCount() {
-        return persons.size();
+        return items.size();
     }
 
-    public static class PersonViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
-        TextView personName;
-        TextView personAge;
-        ImageView personPhoto;
+        TextView itemName;
+        TextView itemPrice;
+        TextView itemCondition;
+        TextView itemCategory;
+        ImageView itemPhoto;
 
-        PersonViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
-            //personName = (TextView)itemView.findViewById(R.id.person_name);
-            //personAge = (TextView)itemView.findViewById(R.id.person_age);
-            //personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
+            itemName = (TextView)itemView.findViewById(R.id.item_name);
+            itemPrice = (TextView)itemView.findViewById(R.id.item_price);
+            itemCondition = (TextView)itemView.findViewById(R.id.item_condition);
+            itemCategory = (TextView)itemView.findViewById(R.id.item_category);
+
+            itemPhoto = (ImageView)itemView.findViewById(R.id.item_photo);
         }
     }
 
-    RVAdapterItems(List<Person> persons){
-        this.persons = persons;
+    RVAdapterItems(List<Item> items){
+        this.items = items;
     }
 
 

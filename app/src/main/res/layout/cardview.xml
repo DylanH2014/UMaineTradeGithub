@@ -19,28 +19,57 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_photo"
-                android:layout_alignParentLeft="true"
+                android:id="@+id/item_photo"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="20dp"
-                />
+                android:layout_marginRight="16dp"
+                android:src="@mipmap/photo1"
+
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_name"
-                android:layout_toRightOf="@+id/person_photo"
+                android:id="@+id/item_name"
+                android:layout_toRightOf="@+id/item_photo"
                 android:layout_alignParentTop="true"
                 android:textSize="30sp"
+                android:text="Asus"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_age"
-                android:layout_toRightOf="@+id/person_photo"
-                android:layout_below="@+id/person_name"
+                android:id="@+id/item_price"
+                android:layout_toRightOf="@+id/item_photo"
+                android:layout_below="@+id/item_name"
+                android:text="$300"
+                android:textSize="20sp"
+                android:paddingRight="10dp"
                 />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_condition"
+                android:text="Used"
+                android:textSize="20sp"
+                android:paddingLeft="20dp"
+                android:layout_below="@+id/item_name"
+                android:layout_toRightOf="@+id/item_name"
+                android:layout_toEndOf="@+id/item_name" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_category"
+                android:text="Electronics"
+                android:textSize="20sp"
+                android:layout_alignTop="@+id/item_condition"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
 
         </RelativeLayout>
 
