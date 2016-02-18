@@ -49,10 +49,10 @@
 
     <string-array name="Categories_Array">
         <item>Electronics</item>
-        <item>Textbooks</item>
-        <item>Clothing</item>
         <item>Furniture</item>
+        <item>Textbooks</item>
         <item>Miscellaneous</item>
+        <item>Clothing</item>
 
     </string-array>
     <string name="title_activity_add_listings">Add New Listing</string>

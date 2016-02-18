@@ -20,10 +20,31 @@ import com.R;
 public class AddListings extends AppCompatActivity {
 
     private String itemName;
-    private String itemPrice;
-    private String itemCondition;
-    private String itemCategory;
+    private int itemPrice;
+    private int itemCondition;
+    private int itemCategory;
+    public static int ownerId;
 
+    public int getItemOwnerId() {
+        return itemOwnerId;
+    }
+
+    public void setItemOwnerId(int itemOwnerId) {
+        this.itemOwnerId = itemOwnerId;
+    }
+
+    private int itemOwnerId;
+
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
+    }
+
+    private String itemDescription;
     public String getItemName() {
         return itemName;
     }
@@ -32,27 +53,27 @@ public class AddListings extends AppCompatActivity {
         this.itemName = itemName;
     }
 
-    public String getItemPrice() {
+    public int getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(int itemPrice) {
         this.itemPrice = itemPrice;
     }
 
-    public String getItemCondition() {
+    public int getItemCondition() {
         return itemCondition;
     }
 
-    public void setItemCondition(String itemCondition) {
+    public void setItemCondition(int itemCondition) {
         this.itemCondition = itemCondition;
     }
 
-    public String getItemCategory() {
+    public int getItemCategory() {
         return itemCategory;
     }
 
-    public void setItemCategory(String itemCategory) {
+    public void setItemCategory(int itemCategory) {
         this.itemCategory = itemCategory;
     }
 
@@ -97,19 +118,19 @@ public class AddListings extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        setItemCategory("Electronics");
+                        setItemCategory(1);
                         break;
                     case 1:
-                        setItemCategory("Textbooks");
+                        setItemCategory(2);
                         break;
                     case 2:
-                        setItemCategory("Clothing");
+                        setItemCategory(3);
                         break;
                     case 3:
-                        setItemCategory("Furniture");
+                        setItemCategory(4);
                         break;
                     case 4:
-                        setItemCategory("Miscellaneous");
+                        setItemCategory(5);
                         break;
 
                 }
@@ -130,7 +151,13 @@ public class AddListings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setItemName(itemNameET.getText().toString());
-                setItemPrice(itemPriceET.getText().toString());
+                setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
+               // setItemCategory(Integer.parseInt(categoryListSpinner.getSelectedItem().toString()));
+                setItemOwnerId(ownerId);
+                setItemDescription(itemDescriptionET.getText().toString());
+
+                DBLogin login = new DBLogin();
+                login.addListing(getItemName(), getItemPrice(), getItemCondition(), 0, getItemCategory(), getItemOwnerId(), getItemDescription());
 
                 Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
 
@@ -140,26 +167,27 @@ public class AddListings extends AppCompatActivity {
 
 
         intent = getIntent();
-        if(intent!= null){
-            String checkActivity = intent.getStringExtra("activityID");
-            String tgetAuthor = intent.getStringExtra("author");
-            String tgetTitle = intent.getStringExtra("title");
-            String tgetDescription = intent.getStringExtra("description");
-            Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
-            //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
-            if (checkActivity.equals("fromMainActivity")){
+            if (intent != null && intent.hasExtra("activityID")) {
+                String checkActivity = intent.getStringExtra("activityID");
+                String tgetAuthor = intent.getStringExtra("author");
+                String tgetTitle = intent.getStringExtra("title");
+                String tgetDescription = intent.getStringExtra("description");
+                //Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
-                itemNameET.setText(tgetTitle);
-                itemDescriptionET.setText("Author is: "+ tgetAuthor + "Description: "+ tgetDescription);
-                categoryListSpinner.setSelection(1);
+                if (checkActivity.equals("fromMainActivity")) {
+
+                    itemNameET.setText(tgetTitle);
+                    itemDescriptionET.setText("Author is: " + tgetAuthor + "Description: " + tgetDescription);
+                    categoryListSpinner.setSelection(1);
+
+                }
+
 
             }
-
-
         }
 
-    }
 
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
@@ -169,11 +197,11 @@ public class AddListings extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.NewConditionRadio:
                 if (checked)
-                    setItemCondition("New");
+                    setItemCondition(1);
                     break;
             case R.id.UsedConditionRadio:
                 if (checked)
-                    setItemCondition("Used");
+                    setItemCondition(2);
                     break;
         }
     }

@@ -9,15 +9,17 @@ public class Item {
 
     //public int itemId;
     public String itemName;
-    public double itemPrice;
-    public String itemOwner;
+    public int itemPrice;
+    public int itemOwner;
     public String itemCondition;
     public String itemCategory;
+    public String itemDescription;
+
 
     public int itemPhoto;
 
 
-    public Item(String itemName, double itemPrice, String itemCondition, String itemCategory, int itemPhoto ) {
+    public Item(String itemName, int itemPrice, String itemCondition, String itemCategory, int itemPhoto, String itemDescription) {
         // this.itemId = itemId;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -25,6 +27,8 @@ public class Item {
         this.itemCondition = itemCondition;
         this.itemPhoto = itemPhoto;
         this.itemCategory = itemCategory;
+        this.itemDescription = itemDescription;
+
 
     }
 

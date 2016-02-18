@@ -176,7 +176,10 @@ public class DBLogin {
 
         //Only return true if: username and password matches and email is verified.
         if(getValidToken() == 1 &&isVerifiedEmail() && isHashPasswordMatch()){
+            AddListings.ownerId = generateUserId(email);
             return true;
+
+
         }
         else{
             return false;
@@ -230,6 +233,93 @@ public class DBLogin {
                 String authenticateQuery = "insert into users (firstname, lastname, email, password, validated) values ('"+firstname+ "','" + lastname+"','" + email+"','" + password+"','" + false+"')";
                 rs = stmt.executeQuery(authenticateQuery);
                //connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public int generateUserId(String email){
+        int userId = 0;
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+
+            try {
+                stmt = connection.createStatement();
+                String authenticateQuery = "select id from users where email = '"+email+"'";
+                rs = stmt.executeQuery(authenticateQuery);
+                //connection.close();
+                while(rs.next()) {
+                    userId = rs.getInt("id");
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+
+        return userId;
+    }
+
+    public void addListing(String itemName, int itemPrice, int conditionId, int photoId, int categoryId, int ownerId, String description){
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+            try {
+                stmt = connection.createStatement();
+                //String authenticateQuery = "insert into items (name, price, conditionid, photoid, categoryid, ownerid, description) values ('"+itemName+ "','" + itemPrice+"','" + conditionId+"','"+ photoId+"','" + + categoryId+"','" + description+"')";
+                String query = "insert into items (name, price, conditionid, photoid, categoryid, ownerid, description) values ('"+itemName+"', '"+itemPrice+"', '"+conditionId+"', '"+photoId+"', '"+categoryId+"', '"+ownerId+"', '"+description+"')";
+
+                rs = stmt.executeQuery(query);
+                //connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void viewListings(){
+
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+            try {
+                stmt = connection.createStatement();
+                String query = "select i.name, i.price, con.condition, cat.category, p.photo, u.firstname, u.lastname, i.description from items i \n" +
+                        "left join users u on u.id = i.ownerid\n" +
+                        "left join condition con on con.id = i.conditionid\n" +
+                        "left join category cat on cat.id = i.categoryid\n" +
+                        "left join photo p on p.id = i.photoid";
+                rs = stmt.executeQuery(query);
+                //connection.close();
 
             } catch (SQLException e) {
                 e.printStackTrace();
