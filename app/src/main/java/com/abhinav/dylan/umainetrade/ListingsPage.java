@@ -22,6 +22,7 @@ import com.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import Data.Item;
 import Data.Person;
 
 public class ListingsPage extends AppCompatActivity {
@@ -30,7 +31,8 @@ public class ListingsPage extends AppCompatActivity {
     private DrawerLayout theDrawerLayout;
     private ListView drawerList;
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    private List<Person> persons;
+    //private List<Person> persons;
+    private List<Item> items;
     private RecyclerView rv;
     public static Context listingContext;
 
@@ -103,10 +105,12 @@ public class ListingsPage extends AppCompatActivity {
     }
 
     private void initializeData(){
-        persons = new ArrayList<>();
-        persons.add(new Person("Emma Wilson", "23 years old", R.mipmap.photo1));
-        persons.add(new Person("Lavery Maiss", "25 years old", R.mipmap.photo1));
-        persons.add(new Person("Lillie Watts", "35 years old", R.mipmap.photo1));
+        items = new ArrayList<>();
+        items.add(new Item("Asus Laptop", 30.00, "New", "Electronics", R.mipmap.photo1));
+        items.add(new Item("Heated Sofa", 100.00, "Used", "Furniture", R.mipmap.photo1));
+        items.add(new Item("Galaxy S3", 250.00, "Used", "Electronics", R.mipmap.photo1));
+
+
     }
 
 
@@ -118,7 +122,9 @@ public class ListingsPage extends AppCompatActivity {
 
 
     private void initializeAdapter(Context context){
-        RVAdapter adapter = new RVAdapter(persons);
+        //RVAdapter adapter = new RVAdapter(persons);
+        //rv.setAdapter(adapter);
+        RVAdapterItems adapter = new RVAdapterItems(items);
         rv.setAdapter(adapter);
     }
 

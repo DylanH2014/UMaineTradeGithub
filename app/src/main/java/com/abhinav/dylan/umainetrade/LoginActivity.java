@@ -81,10 +81,12 @@ public class LoginActivity extends AppCompatActivity {
         Button signUpButton = (Button) findViewById(R.id.SignUpButton);
         Button scanButton = (Button) findViewById(R.id.scan_button);
         Button testing = (Button) findViewById(R.id.TestListingPageButton);
-        final DBLogin login = new DBLogin();
+
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 setEmail(emailET.getText().toString());
 
                 setPassword(passwordET.getText().toString());
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (!getEmail().isEmpty() && !getPassword().isEmpty()) {
 
                     if (validate(getEmail())) {
+                        DBLogin login = new DBLogin();
                         if (login.authenticate(getEmail(), getPassword())) {
                             Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
                         } else {
