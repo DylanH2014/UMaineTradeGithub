@@ -105,6 +105,8 @@ public class ListingsPage extends AppCompatActivity {
     }
 
     private void initializeData(){
+
+
         items = new ArrayList<>();
         items.add(new Item("Asus Laptop", 30, "New", "Electronics", R.mipmap.photo1, "Used Asus Laptop"));
         items.add(new Item("Heated Sofa", 100, "Used", "Furniture", R.mipmap.photo1, "Selling heated sofa"));

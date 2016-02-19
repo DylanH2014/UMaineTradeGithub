@@ -6,8 +6,12 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -297,6 +301,31 @@ public class DBLogin {
             }
 
 
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void insertImage(File file, FileInputStream fis){
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            try {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO images VALUES (?, ?)");
+                ps.setString(1, file.getName());
+                ps.setBinaryStream(2, fis, (int)file.length());
+                ps.executeUpdate();
+                ps.close();
+                fis.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
         } else {

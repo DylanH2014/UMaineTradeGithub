@@ -1,6 +1,9 @@
 package com.abhinav.dylan.umainetrade;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,11 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class AddListings extends AppCompatActivity {
 
@@ -80,6 +88,20 @@ public class AddListings extends AppCompatActivity {
     private String getAuthor, getTitle, getDescription;
 
     private Intent intent;
+    private Bitmap mImageBitmap;
+    private static final int CAMERA_REQUEST = 1888;
+
+    public ImageView getAddImage() {
+        return addImage;
+    }
+
+    public void setAddImage(ImageView addImage) {
+        this.addImage = addImage;
+    }
+
+    private ImageView addImage;
+    private Uri mImageCaptureUri;
+    private String pathToImage;
 
 
 
@@ -102,6 +124,7 @@ public class AddListings extends AppCompatActivity {
 
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
         final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
+        addImage = (ImageView) findViewById(R.id.addImageIV);
 
 
 
@@ -152,11 +175,21 @@ public class AddListings extends AppCompatActivity {
             public void onClick(View v) {
                 setItemName(itemNameET.getText().toString());
                 setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
-               // setItemCategory(Integer.parseInt(categoryListSpinner.getSelectedItem().toString()));
+                // setItemCategory(Integer.parseInt(categoryListSpinner.getSelectedItem().toString()));
                 setItemOwnerId(ownerId);
                 setItemDescription(itemDescriptionET.getText().toString());
-
                 DBLogin login = new DBLogin();
+                //File file = new File(addImage.getDrawable().);
+                File file = new File(pathToImage);
+                FileInputStream fis;
+                try {
+                    fis = new FileInputStream(file);
+                    login.insertImage(file, fis);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
                 login.addListing(getItemName(), getItemPrice(), getItemCondition(), 0, getItemCategory(), getItemOwnerId(), getItemDescription());
 
                 Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
@@ -164,6 +197,18 @@ public class AddListings extends AppCompatActivity {
             }
         });
 
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Hi", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                        mImageCaptureUri);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+
+            }
+        });
 
 
         intent = getIntent();
@@ -187,6 +232,20 @@ public class AddListings extends AppCompatActivity {
 
             }
         }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            //Uri sample = (Uri) data.getExtras().get("mImageCaptureUri");
+            //Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+            //Uri uri = intent.getParcelableExtra("imageUri");
+            addImage.setImageBitmap(photo);
+            pathToImage = mImageCaptureUri.getPath();
+
+        }
+    }
 
 
     public void onRadioButtonClicked(View view) {
