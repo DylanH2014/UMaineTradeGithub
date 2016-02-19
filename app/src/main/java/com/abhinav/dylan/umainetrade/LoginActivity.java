@@ -28,6 +28,7 @@ import com.example.dylan.MainActivity;
 public class LoginActivity extends AppCompatActivity {
     private String email;
     private String password;
+    public static int userId;
 
 
     public static Context context;
@@ -100,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
                         DBLogin login = new DBLogin();
                         if (login.authenticate(getEmail(), getPassword())) {
                             Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+
+                            Intent listingsPageIntent = new Intent(LoginActivity.this, ListingsPage.class);
+                            startActivity(listingsPageIntent);
+
                         } else {
                             Toast.makeText(getApplicationContext(), "Wrong Username and/or Password", Toast.LENGTH_SHORT).show();
                         }

@@ -1,6 +1,9 @@
 package com.abhinav.dylan.umainetrade;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,19 +14,45 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class AddListings extends AppCompatActivity {
 
     private String itemName;
-    private String itemPrice;
-    private String itemCondition;
-    private String itemCategory;
+    private int itemPrice;
+    private int itemCondition;
+    private int itemCategory;
+    public static int ownerId;
 
+    public int getItemOwnerId() {
+        return itemOwnerId;
+    }
+
+    public void setItemOwnerId(int itemOwnerId) {
+        this.itemOwnerId = itemOwnerId;
+    }
+
+    private int itemOwnerId;
+
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
+    }
+
+    private String itemDescription;
     public String getItemName() {
         return itemName;
     }
@@ -32,33 +61,47 @@ public class AddListings extends AppCompatActivity {
         this.itemName = itemName;
     }
 
-    public String getItemPrice() {
+    public int getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(int itemPrice) {
         this.itemPrice = itemPrice;
     }
 
-    public String getItemCondition() {
+    public int getItemCondition() {
         return itemCondition;
     }
 
-    public void setItemCondition(String itemCondition) {
+    public void setItemCondition(int itemCondition) {
         this.itemCondition = itemCondition;
     }
 
-    public String getItemCategory() {
+    public int getItemCategory() {
         return itemCategory;
     }
 
-    public void setItemCategory(String itemCategory) {
+    public void setItemCategory(int itemCategory) {
         this.itemCategory = itemCategory;
     }
 
     private String getAuthor, getTitle, getDescription;
 
     private Intent intent;
+    private Bitmap mImageBitmap;
+    private static final int CAMERA_REQUEST = 1888;
+
+    public ImageView getAddImage() {
+        return addImage;
+    }
+
+    public void setAddImage(ImageView addImage) {
+        this.addImage = addImage;
+    }
+
+    private ImageView addImage;
+    private Uri mImageCaptureUri;
+    private String pathToImage;
 
 
 
@@ -81,6 +124,7 @@ public class AddListings extends AppCompatActivity {
 
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
         final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
+        addImage = (ImageView) findViewById(R.id.addImageIV);
 
 
 
@@ -97,19 +141,19 @@ public class AddListings extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        setItemCategory("Electronics");
+                        setItemCategory(1);
                         break;
                     case 1:
-                        setItemCategory("Textbooks");
+                        setItemCategory(2);
                         break;
                     case 2:
-                        setItemCategory("Clothing");
+                        setItemCategory(3);
                         break;
                     case 3:
-                        setItemCategory("Furniture");
+                        setItemCategory(4);
                         break;
                     case 4:
-                        setItemCategory("Miscellaneous");
+                        setItemCategory(5);
                         break;
 
                 }
@@ -130,36 +174,79 @@ public class AddListings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setItemName(itemNameET.getText().toString());
-                setItemPrice(itemPriceET.getText().toString());
+                setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
+                // setItemCategory(Integer.parseInt(categoryListSpinner.getSelectedItem().toString()));
+                setItemOwnerId(ownerId);
+                setItemDescription(itemDescriptionET.getText().toString());
+                DBLogin login = new DBLogin();
+                //File file = new File(addImage.getDrawable().);
+                File file = new File(pathToImage);
+                FileInputStream fis;
+                try {
+                    fis = new FileInputStream(file);
+                    login.insertImage(file, fis);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                login.addListing(getItemName(), getItemPrice(), getItemCondition(), 0, getItemCategory(), getItemOwnerId(), getItemDescription());
 
                 Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
 
             }
         });
 
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Hi", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+                        mImageCaptureUri);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+
+            }
+        });
 
 
         intent = getIntent();
-        if(intent!= null){
-            String checkActivity = intent.getStringExtra("activityID");
-            String tgetAuthor = intent.getStringExtra("author");
-            String tgetTitle = intent.getStringExtra("title");
-            String tgetDescription = intent.getStringExtra("description");
-            Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
-            //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
-            if (checkActivity.equals("fromMainActivity")){
+            if (intent != null && intent.hasExtra("activityID")) {
+                String checkActivity = intent.getStringExtra("activityID");
+                String tgetAuthor = intent.getStringExtra("author");
+                String tgetTitle = intent.getStringExtra("title");
+                String tgetDescription = intent.getStringExtra("description");
+                //Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
-                itemNameET.setText(tgetTitle);
-                itemDescriptionET.setText("Author is: "+ tgetAuthor + "Description: "+ tgetDescription);
-                categoryListSpinner.setSelection(1);
+                if (checkActivity.equals("fromMainActivity")) {
+
+                    itemNameET.setText(tgetTitle);
+                    itemDescriptionET.setText("Author is: " + tgetAuthor + "Description: " + tgetDescription);
+                    categoryListSpinner.setSelection(1);
+
+                }
+
 
             }
-
-
         }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            //Uri sample = (Uri) data.getExtras().get("mImageCaptureUri");
+            //Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+            //Uri uri = intent.getParcelableExtra("imageUri");
+            addImage.setImageBitmap(photo);
+            pathToImage = mImageCaptureUri.getPath();
+
+        }
     }
+
 
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
@@ -169,11 +256,11 @@ public class AddListings extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.NewConditionRadio:
                 if (checked)
-                    setItemCondition("New");
+                    setItemCondition(1);
                     break;
             case R.id.UsedConditionRadio:
                 if (checked)
-                    setItemCondition("Used");
+                    setItemCondition(2);
                     break;
         }
     }

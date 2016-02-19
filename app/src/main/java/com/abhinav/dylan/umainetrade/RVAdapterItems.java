@@ -36,10 +36,12 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
     @Override
     public void onBindViewHolder(final ItemViewHolder itemViewHolder, final int position) {
         itemViewHolder.itemName.setText(items.get(position).itemName);
-        itemViewHolder.itemPrice.setText(Double.toString(items.get(position).itemPrice));
+        itemViewHolder.itemPrice.setText(Integer.toString(items.get(position).itemPrice));
         itemViewHolder.itemCondition.setText(items.get(position).itemCondition);
         itemViewHolder.itemCategory.setText(items.get(position).itemCategory);
+
         itemViewHolder.itemPhoto.setImageResource(items.get(position).itemPhoto);
+
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +77,6 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
             itemPrice = (TextView)itemView.findViewById(R.id.item_price);
             itemCondition = (TextView)itemView.findViewById(R.id.item_condition);
             itemCategory = (TextView)itemView.findViewById(R.id.item_category);
-
             itemPhoto = (ImageView)itemView.findViewById(R.id.item_photo);
         }
     }
