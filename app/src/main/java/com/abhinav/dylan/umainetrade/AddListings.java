@@ -1,10 +1,15 @@
 package com.abhinav.dylan.umainetrade;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +26,14 @@ import android.widget.Toast;
 
 import com.R;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 public class AddListings extends AppCompatActivity {
 
@@ -103,6 +113,19 @@ public class AddListings extends AppCompatActivity {
     private Uri mImageCaptureUri;
     private String pathToImage;
 
+    File destination;
+    String imagePath;
+
+    public String getFinalImagePath() {
+        return finalImagePath;
+    }
+
+    public void setFinalImagePath(String finalImagePath) {
+        this.finalImagePath = finalImagePath;
+    }
+
+    private String finalImagePath;
+
 
 
     @Override
@@ -114,20 +137,12 @@ public class AddListings extends AppCompatActivity {
 
         toolbar.setTitle("Add New Listing");
 
-
-
-
         //Find UI elements
-
         final EditText itemNameET = (EditText) findViewById(R.id.ItemNameET);
-
-
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
         final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
         addImage = (ImageView) findViewById(R.id.addImageIV);
-
-
-
+        Button getPhoto = (Button) findViewById(R.id.GetPhotoButton);
 
         final Spinner categoryListSpinner  = (Spinner) findViewById(R.id.Spinner_Categories);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -168,6 +183,23 @@ public class AddListings extends AppCompatActivity {
 
         });
 
+        getPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addImage.setImageResource(android.R.color.transparent);
+                DBLogin login = new DBLogin();
+                //byte[] imageByteArray = login.getImage(getFinalImagePath());
+                byte[] imageByteArray = login.getImage(getFinalImagePath());
+
+                Toast.makeText(AddListings.this, Arrays.toString(imageByteArray), Toast.LENGTH_SHORT).show();
+
+                Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                addImage.setImageBitmap(bmp);
+
+
+            }
+        });
+
 
         Button addListingButton = (Button) findViewById(R.id.ListButton);
         addListingButton.setOnClickListener(new View.OnClickListener() {
@@ -180,10 +212,11 @@ public class AddListings extends AppCompatActivity {
                 setItemDescription(itemDescriptionET.getText().toString());
                 DBLogin login = new DBLogin();
                 //File file = new File(addImage.getDrawable().);
-                File file = new File(pathToImage);
+                File file = new File(getFinalImagePath());
                 FileInputStream fis;
                 try {
                     fis = new FileInputStream(file);
+
                     login.insertImage(file, fis);
 
                 } catch (FileNotFoundException e) {
@@ -197,13 +230,19 @@ public class AddListings extends AppCompatActivity {
             }
         });
 
+        String name =   dateToString(new Date(),"yyyy-MM-dd-hh-mm-ss");
+        destination = new File(Environment.getExternalStorageDirectory(), name + ".jpg");
+
+
+
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Hi", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Hi", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
-                        mImageCaptureUri);
+                //cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,mImageCaptureUri);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(destination));
+
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
 
@@ -231,21 +270,43 @@ public class AddListings extends AppCompatActivity {
 
 
             }
+
         }
 
+    public String dateToString(Date date, String format) {
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        return df.format(date);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            //Bitmap photo = (Bitmap) data.getExtras().get("data");
 
             //Uri sample = (Uri) data.getExtras().get("mImageCaptureUri");
             //Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
             //Uri uri = intent.getParcelableExtra("imageUri");
-            addImage.setImageBitmap(photo);
-            pathToImage = mImageCaptureUri.getPath();
+            //addImage.setImageBitmap(photo);
+            //pathToImage = mImageCaptureUri.getPath();
+
+            try {
+                FileInputStream in = new FileInputStream(destination);
+                //BitmapFactory.Options options = new BitmapFactory.Options();
+                //options.inSampleSize = 10;
+                //Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
+                //addImage.setImageBitmap(bmp);
+                imagePath = destination.getAbsolutePath();
+                setFinalImagePath(imagePath);
+                //Toast.makeText(AddListings.this, imagePath, Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
 
         }
     }
+
+
 
 
     public void onRadioButtonClicked(View view) {

@@ -9,12 +9,14 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import BCrypt.BCrypt;
 
@@ -332,6 +334,38 @@ public class DBLogin {
             Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public byte[] getImage(String filePath){
+        byte[] imgBytes = new byte[1];
+        if (connection != null) {
+            ResultSet rs;
+
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            try {
+
+                PreparedStatement ps = connection.prepareStatement("SELECT img FROM images WHERE imgname = ?");
+                ps.setString(1, filePath);
+                ResultSet res = ps.executeQuery();
+                while (res.next()) {
+                   imgBytes = res.getBytes(1);
+                    // use the data in some way here
+
+                }
+
+                res.close();
+                ps.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+        return imgBytes;
     }
 
     public void viewListings(){
