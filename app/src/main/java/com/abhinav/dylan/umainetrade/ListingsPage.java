@@ -44,6 +44,7 @@ public class ListingsPage extends AppCompatActivity {
         listingContext = getApplicationContext();
         //setSupportActionBar(toolbar);
         toolbar.setTitle("Sale Page");
+        toolbar.setVisibility(View.GONE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

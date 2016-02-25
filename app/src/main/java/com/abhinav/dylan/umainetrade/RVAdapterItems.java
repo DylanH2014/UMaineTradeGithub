@@ -1,5 +1,6 @@
 package com.abhinav.dylan.umainetrade;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,10 +36,17 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
 
     @Override
     public void onBindViewHolder(final ItemViewHolder itemViewHolder, final int position) {
-        itemViewHolder.itemName.setText(items.get(position).itemName);
-        itemViewHolder.itemPrice.setText(Integer.toString(items.get(position).itemPrice));
-        itemViewHolder.itemCondition.setText(items.get(position).itemCondition);
-        itemViewHolder.itemCategory.setText(items.get(position).itemCategory);
+        final String itemName = items.get(position).itemName;
+        final String itemPrice = Integer.toString(items.get(position).itemPrice);
+        final String itemCondition = items.get(position).itemCondition;
+        final String itemCategory = items.get(position).itemCategory;
+        final String itemDescription = items.get(position).itemDescription;
+
+        itemViewHolder.itemName.setText(itemName);
+        itemViewHolder.itemPrice.setText("$"+itemPrice);
+        itemViewHolder.itemCondition.setText(itemCondition);
+        itemViewHolder.itemCategory.setText(itemCategory);
+        //itemViewHolder.itemDescription.setText(itemDescription);
 
         itemViewHolder.itemPhoto.setImageResource(items.get(position).itemPhoto);
 
@@ -46,6 +54,14 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
             @Override
             public void onClick(View v) {
                 Toast.makeText(ListingsPage.listingContext, "Recycle Click" + items.get(position).itemName, Toast.LENGTH_SHORT).show();
+                Intent viewItem = new Intent(ListingsPage.listingContext, ItemSummary.class);
+                viewItem.putExtra("itemName", itemName);
+                viewItem.putExtra("itemPrice", itemPrice);
+                viewItem.putExtra("itemCondition", itemCondition);
+                viewItem.putExtra("itemCategory", itemCategory);
+                viewItem.putExtra("itemDescription", itemDescription);
+                viewItem.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ListingsPage.listingContext.startActivity(viewItem);
             }
         });
     }
@@ -68,6 +84,7 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
         TextView itemPrice;
         TextView itemCondition;
         TextView itemCategory;
+        TextView itemDescription;
         ImageView itemPhoto;
 
         ItemViewHolder(View itemView) {
@@ -78,6 +95,8 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
             itemCondition = (TextView)itemView.findViewById(R.id.item_condition);
             itemCategory = (TextView)itemView.findViewById(R.id.item_category);
             itemPhoto = (ImageView)itemView.findViewById(R.id.item_photo);
+            itemDescription = (TextView) itemView.findViewById(R.id.item_description);
+
         }
     }
 
