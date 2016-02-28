@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 //import com.abhinav.dylan.umainetrade.R;
@@ -35,6 +36,7 @@ public class ListingsPage extends AppCompatActivity {
     private List<Item> items;
     private RecyclerView rv;
     public static Context listingContext;
+    private RVAdapterItems adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,19 @@ public class ListingsPage extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         toolbar.setTitle("Sale Page");
         toolbar.setVisibility(View.GONE);
+
+        items = new ArrayList<>();
+
+        Button loadMore = (Button) findViewById(R.id.loadMoreButton);
+        loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                items.add(new Item("Just added", 250, "Used", "Electronics", R.mipmap.photo1, "selling used phone"));
+                adapter.notifyDataSetChanged();
+
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +110,9 @@ public class ListingsPage extends AppCompatActivity {
         rv.setLayoutManager(llm);
 
         initializeData();
-        initializeAdapter(getApplicationContext());
+        //initializeAdapter(getApplicationContext());
+        adapter = new RVAdapterItems(items);
+        rv.setAdapter(adapter);
 
 
 
@@ -108,10 +125,11 @@ public class ListingsPage extends AppCompatActivity {
     private void initializeData(){
 
 
-        items = new ArrayList<>();
+
         items.add(new Item("Asus Laptop", 30, "New", "Electronics", R.mipmap.photo1, "Used Asus Laptop"));
         items.add(new Item("Heated Sofa", 100, "Used", "Furniture", R.mipmap.photo1, "Selling heated sofa"));
         items.add(new Item("Galaxy S3", 250, "Used", "Electronics", R.mipmap.photo1, "selling used phone"));
+
 
 
     }

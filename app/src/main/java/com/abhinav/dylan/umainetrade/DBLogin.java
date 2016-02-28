@@ -2,9 +2,14 @@ package com.abhinav.dylan.umainetrade;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.postgresql.largeobject.LargeObject;
+import org.postgresql.largeobject.LargeObjectManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -137,6 +142,7 @@ public class DBLogin {
                     try {
                         stmt = connection.createStatement();
                         String authenticateQuery = "select count(email), validated from users where email ='"+email+"' group by validated";
+
 
 
                         rs = stmt.executeQuery(authenticateQuery);
@@ -311,14 +317,50 @@ public class DBLogin {
 
     }
 
-    public void insertImage(File file, FileInputStream fis){
+    public void insertImage(File file, FileInputStream fis) throws SQLException, IOException {
+        if (connection != null) {
+            ResultSet rs;
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO images VALUES (?, ?)");
+            ps.setString(1, file.getName());
+            ps.setBinaryStream(2, fis, file.length());
+            ps.executeUpdate();
+            ps.close();
+            fis.close();
+        }
+
+        /*
         if (connection != null) {
             ResultSet rs;
             //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
             try {
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO images VALUES (?, ?)");
+                // All LargeObject API calls must be within a transaction block
+                connection.setAutoCommit(false);
+
+                // Get the Large Object Manager to perform operations with
+                LargeObjectManager lobj = ((org.postgresql.PGConnection)connection).getLargeObjectAPI();
+
+                // Create a new large object
+                long oid = lobj.createLO();
+
+                // Open the large object for writing
+                LargeObject obj = lobj.open(oid);
+
+                // Now open the file
+                               // Copy the data from the file to the large object
+                byte buf[] = new byte[2048];
+                int s, tl = 0;
+                while ((s = fis.read(buf, 0, 2048)) > 0) {
+                    obj.write(buf, 0, s);
+                    tl += s;
+                }
+
+                // Close the large object
+                obj.close();
+
+                // Now insert the row into imageslo
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO imageslo VALUES (?, ?)");
                 ps.setString(1, file.getName());
-                ps.setBinaryStream(2, fis, (int)file.length());
+                ps.setInt(2, (int) oid);
                 ps.executeUpdate();
                 ps.close();
                 fis.close();
@@ -333,40 +375,86 @@ public class DBLogin {
         } else {
             Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
         }
-
+*/
     }
 
-    public byte[] getImage(String filePath){
-        byte[] imgBytes = new byte[1];
-        if (connection != null) {
-            ResultSet rs;
+    public byte[] getImage(int id) {
+        byte[] byteImg = null;
 
-            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
-            try {
+        try {
 
-                PreparedStatement ps = connection.prepareStatement("SELECT img FROM images WHERE imgname = ?");
-                ps.setString(1, filePath);
-                ResultSet res = ps.executeQuery();
-                while (res.next()) {
-                   imgBytes = res.getBytes(1);
-                    // use the data in some way here
-
-                }
-
-                res.close();
-                ps.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            PreparedStatement ps = connection
+                    .prepareStatement("SELECT image FROM image WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                byteImg = rs.getBytes(1);
+                // use the data in some way here
             }
+            rs.close();
+            ps.close();
 
+            return byteImg;
+        } catch (Exception e) {
 
-        } else {
-            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+            return null;
         }
 
-        return imgBytes;
     }
+
+    public int getImageId(byte[] byteArray) {
+        int photoID = 0;
+        try {
+
+            PreparedStatement ps = connection
+                    .prepareStatement("SELECT id FROM image WHERE image = ?");
+            ps.setBytes(1, byteArray);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                photoID = rs.getInt(1);
+                // use the data in some way here
+            }
+            rs.close();
+            ps.close();
+
+
+        } catch (Exception e) {
+
+            //return null;
+        }
+        return photoID;
+    }
+
+    public void addImage(byte[] img) {
+
+        try {
+
+            Statement statement = connection.createStatement();
+
+            PreparedStatement ps = connection
+                    .prepareStatement("INSERT INTO image (image) VALUES (?)");
+            //ps.setInt(1, id);
+            ps.setBytes(1, img);
+
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //connection.close();
+
+            } catch (Exception e) {
+
+            }
+        }
+
+    }
+
+
+
+
 
     public void viewListings(){
 

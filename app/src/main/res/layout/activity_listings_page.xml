@@ -22,9 +22,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-
     <include layout="@layout/content_listings_page" />
+    <include layout="@layout/loadmorebutton" />
+
+
+
 
 
     <android.support.design.widget.FloatingActionButton

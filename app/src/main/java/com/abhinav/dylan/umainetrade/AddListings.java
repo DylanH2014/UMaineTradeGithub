@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import java.util.*;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,11 +27,16 @@ import android.widget.Toast;
 
 import com.R;
 
+import org.postgresql.core.Utils;
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,6 +48,16 @@ public class AddListings extends AppCompatActivity {
     private int itemCondition;
     private int itemCategory;
     public static int ownerId;
+
+    public int getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
+    }
+
+    private int photoId;
 
     public int getItemOwnerId() {
         return itemOwnerId;
@@ -112,6 +128,7 @@ public class AddListings extends AppCompatActivity {
     private ImageView addImage;
     private Uri mImageCaptureUri;
     private String pathToImage;
+    public static byte[] imageBytes;
 
     File destination;
     String imagePath;
@@ -189,14 +206,23 @@ public class AddListings extends AppCompatActivity {
                 addImage.setImageResource(android.R.color.transparent);
                 DBLogin login = new DBLogin();
                 //byte[] imageByteArray = login.getImage(getFinalImagePath());
-                byte[] imageByteArray = login.getImage(getFinalImagePath());
+                //byte[] imageByteArray = login.getImage(getFinalImagePath());
+                byte[] image = login.getImage(1);
 
-                Toast.makeText(AddListings.this, Arrays.toString(imageByteArray), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddListings.this, Arrays.toString(imageByteArray), Toast.LENGTH_SHORT).show();
 
-                Bitmap bmp = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
                 addImage.setImageBitmap(bmp);
 
 
+            }
+        });
+
+        Button clearImage = (Button) findViewById(R.id.ClearButton);
+        clearImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addImage.setImageResource(android.R.color.transparent);
             }
         });
 
@@ -205,27 +231,28 @@ public class AddListings extends AppCompatActivity {
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setItemName(itemNameET.getText().toString());
-                setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
-                // setItemCategory(Integer.parseInt(categoryListSpinner.getSelectedItem().toString()));
-                setItemOwnerId(ownerId);
-                setItemDescription(itemDescriptionET.getText().toString());
                 DBLogin login = new DBLogin();
-                //File file = new File(addImage.getDrawable().);
-                File file = new File(getFinalImagePath());
-                FileInputStream fis;
                 try {
-                    fis = new FileInputStream(file);
-
-                    login.insertImage(file, fis);
+                    byte [] byteImage = ImageToByte(new File(getFinalImagePath()));
+                    login.addImage(byteImage);
+                    setPhotoId(login.getImageId(byteImage));
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+                setItemName(itemNameET.getText().toString());
+                setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
+                setItemOwnerId(ownerId);
+                setItemDescription(itemDescriptionET.getText().toString());
 
-                login.addListing(getItemName(), getItemPrice(), getItemCondition(), 0, getItemCategory(), getItemOwnerId(), getItemDescription());
 
-                Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
+
+                //File file = new File(getFinalImagePath());
+
+
+                login.addListing(getItemName(), getItemPrice(), getItemCondition(), getPhotoId(), getItemCategory(), getItemOwnerId(), getItemDescription());
+
+                //Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -278,6 +305,22 @@ public class AddListings extends AppCompatActivity {
         return df.format(date);
     }
 
+    public static byte [] ImageToByte(File file) throws FileNotFoundException{
+        FileInputStream fis = new FileInputStream(file);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        try {
+            for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                bos.write(buf, 0, readNum);
+                System.out.println("read " + readNum + " bytes,");
+            }
+        } catch (IOException ex) {
+        }
+        byte[] bytes = bos.toByteArray();
+
+        return bytes;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -292,10 +335,10 @@ public class AddListings extends AppCompatActivity {
 
             try {
                 FileInputStream in = new FileInputStream(destination);
-                //BitmapFactory.Options options = new BitmapFactory.Options();
-                //options.inSampleSize = 10;
-                //Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
-                //addImage.setImageBitmap(bmp);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 10;
+                Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
+                addImage.setImageBitmap(bmp);
                 imagePath = destination.getAbsolutePath();
                 setFinalImagePath(imagePath);
                 //Toast.makeText(AddListings.this, imagePath, Toast.LENGTH_SHORT).show();
