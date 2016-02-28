@@ -252,6 +252,7 @@ public class AddListings extends AppCompatActivity {
 
                 login.addListing(getItemName(), getItemPrice(), getItemCondition(), getPhotoId(), getItemCategory(), getItemOwnerId(), getItemDescription());
 
+                ListingsPage.adapter.notifyDataSetChanged();
                 //Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
 
             }

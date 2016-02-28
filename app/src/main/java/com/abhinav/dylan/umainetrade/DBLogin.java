@@ -21,9 +21,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import BCrypt.BCrypt;
+import Data.Item;
 
 /**
  * Created by abhinav on 11/17/15.
@@ -456,20 +458,46 @@ public class DBLogin {
 
 
 
-    public void viewListings(){
+    public ArrayList<Item> viewListings(){
+        Item sampleItem = null;
+        ArrayList<Item> listOfItems = new ArrayList<Item>();
 
         if (connection != null) {
             ResultSet rs;
             //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
             Statement stmt = null;
+
+             String itemName;
+             int itemPrice;
+             String itemOwner;
+             String itemCondition;
+             String itemCategory;
+             String itemDescription;
+             byte[] itemImage;
+
             try {
                 stmt = connection.createStatement();
-                String query = "select i.name, i.price, con.condition, cat.category, p.photo, u.firstname, u.lastname, i.description from items i \n" +
+                String query = "select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                        " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                        " img.image as Byte, i.description as Description from items i \n" +
                         "left join users u on u.id = i.ownerid\n" +
                         "left join condition con on con.id = i.conditionid\n" +
                         "left join category cat on cat.id = i.categoryid\n" +
-                        "left join photo p on p.id = i.photoid";
+                        "left join image img on img.id = i.photoid ";
                 rs = stmt.executeQuery(query);
+
+                while(rs.next()){
+                    itemName = rs.getString("itemname");
+                    itemPrice = rs.getInt("price");
+                    itemCondition = rs.getString("condition");
+                    itemCategory = rs.getString("category");
+                    itemOwner = rs.getString("itemowner");
+                    itemImage = rs.getBytes("byte");
+                    itemDescription = rs.getString("description");
+                    sampleItem = new Item(itemName, itemPrice, itemCondition, itemCategory, itemOwner, itemImage, itemDescription);
+                    listOfItems.add(sampleItem);
+                }
+
                 //connection.close();
 
             } catch (SQLException e) {
@@ -484,6 +512,7 @@ public class DBLogin {
         }
 
 
+        return listOfItems;
     }
 
 
