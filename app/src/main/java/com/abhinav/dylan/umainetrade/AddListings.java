@@ -291,8 +291,16 @@ public class AddListings extends AppCompatActivity {
                 if (checkActivity.equals("fromMainActivity")) {
 
                     itemNameET.setText(tgetTitle);
-                    itemDescriptionET.setText("Author is: " + tgetAuthor + "Description: " + tgetDescription);
-                    categoryListSpinner.setSelection(1);
+                    itemDescriptionET.setText(tgetDescription);
+                    categoryListSpinner.setSelection(2);
+
+                    //add thumbnail image from scanner//does not work yet
+                    if(getIntent().hasExtra("byteArray")) {
+                        ImageView _imv= new ImageView(this);
+                        Bitmap _bitmap = BitmapFactory.decodeByteArray(
+                                getIntent().getByteArrayExtra("byteArray"),0,getIntent().getByteArrayExtra("byteArray").length);
+                        _imv.setImageBitmap(_bitmap);
+                    }
 
                 }
 
