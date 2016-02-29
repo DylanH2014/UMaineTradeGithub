@@ -2,21 +2,30 @@ package com.abhinav.dylan.umainetrade;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.postgresql.largeobject.LargeObject;
+import org.postgresql.largeobject.LargeObjectManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import BCrypt.BCrypt;
+import Data.Item;
 
 /**
  * Created by abhinav on 11/17/15.
@@ -135,6 +144,7 @@ public class DBLogin {
                     try {
                         stmt = connection.createStatement();
                         String authenticateQuery = "select count(email), validated from users where email ='"+email+"' group by validated";
+
 
 
                         rs = stmt.executeQuery(authenticateQuery);
@@ -309,14 +319,50 @@ public class DBLogin {
 
     }
 
-    public void insertImage(File file, FileInputStream fis){
+    public void insertImage(File file, FileInputStream fis) throws SQLException, IOException {
+        if (connection != null) {
+            ResultSet rs;
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO images VALUES (?, ?)");
+            ps.setString(1, file.getName());
+            ps.setBinaryStream(2, fis, file.length());
+            ps.executeUpdate();
+            ps.close();
+            fis.close();
+        }
+
+        /*
         if (connection != null) {
             ResultSet rs;
             //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
             try {
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO images VALUES (?, ?)");
+                // All LargeObject API calls must be within a transaction block
+                connection.setAutoCommit(false);
+
+                // Get the Large Object Manager to perform operations with
+                LargeObjectManager lobj = ((org.postgresql.PGConnection)connection).getLargeObjectAPI();
+
+                // Create a new large object
+                long oid = lobj.createLO();
+
+                // Open the large object for writing
+                LargeObject obj = lobj.open(oid);
+
+                // Now open the file
+                               // Copy the data from the file to the large object
+                byte buf[] = new byte[2048];
+                int s, tl = 0;
+                while ((s = fis.read(buf, 0, 2048)) > 0) {
+                    obj.write(buf, 0, s);
+                    tl += s;
+                }
+
+                // Close the large object
+                obj.close();
+
+                // Now insert the row into imageslo
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO imageslo VALUES (?, ?)");
                 ps.setString(1, file.getName());
-                ps.setBinaryStream(2, fis, (int)file.length());
+                ps.setInt(2, (int) oid);
                 ps.executeUpdate();
                 ps.close();
                 fis.close();
@@ -331,23 +377,127 @@ public class DBLogin {
         } else {
             Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
         }
+*/
+    }
+
+    public byte[] getImage(int id) {
+        byte[] byteImg = null;
+
+        try {
+
+            PreparedStatement ps = connection
+                    .prepareStatement("SELECT image FROM image WHERE id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                byteImg = rs.getBytes(1);
+                // use the data in some way here
+            }
+            rs.close();
+            ps.close();
+
+            return byteImg;
+        } catch (Exception e) {
+
+            return null;
+        }
 
     }
 
-    public void viewListings(){
+    public int getImageId(byte[] byteArray) {
+        int photoID = 0;
+        try {
+
+            PreparedStatement ps = connection
+                    .prepareStatement("SELECT id FROM image WHERE image = ?");
+            ps.setBytes(1, byteArray);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                photoID = rs.getInt(1);
+                // use the data in some way here
+            }
+            rs.close();
+            ps.close();
+
+
+        } catch (Exception e) {
+
+            //return null;
+        }
+        return photoID;
+    }
+
+    public void addImage(byte[] img) {
+
+        try {
+
+            Statement statement = connection.createStatement();
+
+            PreparedStatement ps = connection
+                    .prepareStatement("INSERT INTO image (image) VALUES (?)");
+            //ps.setInt(1, id);
+            ps.setBytes(1, img);
+
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //connection.close();
+
+            } catch (Exception e) {
+
+            }
+        }
+
+    }
+
+
+
+
+
+    public ArrayList<Item> viewListings(){
+        Item sampleItem = null;
+        ArrayList<Item> listOfItems = new ArrayList<Item>();
 
         if (connection != null) {
             ResultSet rs;
             //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
             Statement stmt = null;
+
+             String itemName;
+             int itemPrice;
+             String itemOwner;
+             String itemCondition;
+             String itemCategory;
+             String itemDescription;
+             byte[] itemImage;
+
             try {
                 stmt = connection.createStatement();
-                String query = "select i.name, i.price, con.condition, cat.category, p.photo, u.firstname, u.lastname, i.description from items i \n" +
+                String query = "select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                        " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                        " img.image as Byte, i.description as Description from items i \n" +
                         "left join users u on u.id = i.ownerid\n" +
                         "left join condition con on con.id = i.conditionid\n" +
                         "left join category cat on cat.id = i.categoryid\n" +
-                        "left join photo p on p.id = i.photoid";
+                        "left join image img on img.id = i.photoid ";
                 rs = stmt.executeQuery(query);
+
+                while(rs.next()){
+                    itemName = rs.getString("itemname");
+                    itemPrice = rs.getInt("price");
+                    itemCondition = rs.getString("condition");
+                    itemCategory = rs.getString("category");
+                    itemOwner = rs.getString("itemowner");
+                    itemImage = rs.getBytes("byte");
+                    itemDescription = rs.getString("description");
+                    sampleItem = new Item(itemName, itemPrice, itemCondition, itemCategory, itemOwner, itemImage, itemDescription);
+                    listOfItems.add(sampleItem);
+                }
+
                 //connection.close();
 
             } catch (SQLException e) {
@@ -362,6 +512,7 @@ public class DBLogin {
         }
 
 
+        return listOfItems;
     }
 
 

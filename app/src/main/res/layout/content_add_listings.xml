@@ -130,9 +130,9 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/AddPhotoButton"
-        android:text="Add Photo"
-        android:onClick="addNewListing"
+        android:id="@+id/GetPhotoButton"
+        android:text="Get Photo"
+
 
         />
 
@@ -141,9 +141,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/ListButton"
         android:text="@string/ListButton"
-        android:onClick="addNewListing"
+
 
         />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ClearButton"
+        android:text="Clear Photo"
+
+
+        />
 
 </LinearLayout>
