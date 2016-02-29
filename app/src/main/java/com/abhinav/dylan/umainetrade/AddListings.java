@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.R;
@@ -158,8 +159,12 @@ public class AddListings extends AppCompatActivity {
         final EditText itemNameET = (EditText) findViewById(R.id.ItemNameET);
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
         final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
+        final TextView isbnTV = (TextView) findViewById(R.id.ISBNTV);
+        final TextView itemDescriptionTV = (TextView) findViewById(R.id.DescriptionTV);
+
+        final EditText isbnET = (EditText) findViewById(R.id.ISBNET);
         addImage = (ImageView) findViewById(R.id.addImageIV);
-        Button getPhoto = (Button) findViewById(R.id.GetPhotoButton);
+
 
         final Spinner categoryListSpinner  = (Spinner) findViewById(R.id.Spinner_Categories);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -200,23 +205,7 @@ public class AddListings extends AppCompatActivity {
 
         });
 
-        getPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addImage.setImageResource(android.R.color.transparent);
-                DBLogin login = new DBLogin();
-                //byte[] imageByteArray = login.getImage(getFinalImagePath());
-                //byte[] imageByteArray = login.getImage(getFinalImagePath());
-                byte[] image = login.getImage(1);
 
-                //Toast.makeText(AddListings.this, Arrays.toString(imageByteArray), Toast.LENGTH_SHORT).show();
-
-                Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
-                addImage.setImageBitmap(bmp);
-
-
-            }
-        });
 
         Button clearImage = (Button) findViewById(R.id.ClearButton);
         clearImage.setOnClickListener(new View.OnClickListener() {
@@ -286,21 +275,33 @@ public class AddListings extends AppCompatActivity {
                 String tgetAuthor = intent.getStringExtra("author");
                 String tgetTitle = intent.getStringExtra("title");
                 String tgetDescription = intent.getStringExtra("description");
+                String tgetISBN = intent.getStringExtra("isbn");
+
+
                 //Toast.makeText(AddListings.this, tgetAuthor, Toast.LENGTH_SHORT).show();
                 //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
                 if (checkActivity.equals("fromMainActivity")) {
-
-                    itemNameET.setText(tgetTitle);
-                    itemDescriptionET.setText(tgetDescription);
+                    isbnET.setEnabled(true);
+                    isbnTV.setEnabled(true);
+                    itemDescriptionET.setMaxLines(1);
+                    itemDescriptionET.setInputType(1);
+                    itemDescriptionTV.setText("Author(s): ");
+                    itemNameET.setText(tgetTitle.replace("TITLE :", ""));
+                    itemDescriptionET.setText(tgetAuthor.replace("AUTHOR(S):", ""));
+                    isbnET.setText(tgetISBN);
                     categoryListSpinner.setSelection(2);
 
                     //add thumbnail image from scanner//does not work yet
                     if(getIntent().hasExtra("byteArray")) {
-                        ImageView _imv= new ImageView(this);
+                        //ImageView _imv= new ImageView(this);
                         Bitmap _bitmap = BitmapFactory.decodeByteArray(
                                 getIntent().getByteArrayExtra("byteArray"),0,getIntent().getByteArrayExtra("byteArray").length);
-                        _imv.setImageBitmap(_bitmap);
+                        addImage.setImageBitmap(_bitmap);
+                        addImage.setOnClickListener(null);
+
+
+
                     }
 
                 }
