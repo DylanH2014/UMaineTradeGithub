@@ -3,6 +3,7 @@ package com.example.dylan;
 
         import java.io.BufferedInputStream;
         import java.io.BufferedReader;
+        import java.io.ByteArrayOutputStream;
         import java.io.InputStream;
         import java.io.InputStreamReader;
         import java.net.URL;
@@ -50,9 +51,9 @@ package com.example.dylan;
 public class MainActivity extends Activity implements OnClickListener {
 
     //scan, preview, link buttons
-    private Button scanBtn, previewBtn, linkBtn, linkToListingsBtn;
+    private Button scanBtn, previewBtn, linkBtn, linkToListingsBtn, wrongBook;
     //author, title, description, date and rating count text views
-    private TextView authorText, titleText, descriptionText, dateText, ratingCountText;
+    private TextView authorText, titleText, descriptionText, dateText, ratingCountText, verifyBook;
     //layout for star rating
     private LinearLayout starLayout;
     //thumbnail
@@ -81,6 +82,13 @@ public class MainActivity extends Activity implements OnClickListener {
         linkBtn = (Button)findViewById(R.id.link_btn);
         linkBtn.setVisibility(View.GONE);
         linkBtn.setOnClickListener(this);
+
+        wrongBook=(Button)findViewById(R.id.wrongBook);
+        wrongBook.setVisibility(View.GONE);
+        wrongBook.setOnClickListener(this);
+
+        verifyBook=(TextView)findViewById(R.id.verification);
+
 
         //linkToListingsBtn = (Button) findViewById(R.id.link_to_listings);
         //linkToListingsBtn.setVisibility(View.GONE);
@@ -172,7 +180,21 @@ public class MainActivity extends Activity implements OnClickListener {
             intent.putExtra("author", authorText.getText().toString());
             intent.putExtra("description", descriptionText.getText().toString());
 
+            //send the thumbnail image to addListings class
+            Bitmap _bitmap = thumbImg; // your bitmap
+            ByteArrayOutputStream _bs = new ByteArrayOutputStream();
+            _bitmap.compress(Bitmap.CompressFormat.PNG, 50, _bs);
+            intent.putExtra("byteArray", _bs.toByteArray());
+
+
+
             startActivity(intent);
+        //if book isn't correct, open listings page for manual input
+        }
+        else if(v.getId()==R.id.wrongBook){
+            Intent intent = new Intent(this, AddListings.class);
+            startActivity(intent);
+            //Toast.makeText(MainActivity.this, "Not the correct book", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -244,7 +266,9 @@ public class MainActivity extends Activity implements OnClickListener {
         protected void onPostExecute(String result) {
             try{
                 //parse results
+                verifyBook.setVisibility(View.VISIBLE);
                 previewBtn.setVisibility(View.VISIBLE);
+                wrongBook.setVisibility(View.VISIBLE);
                 JSONObject resultObject = new JSONObject(result);
                 JSONArray bookArray = resultObject.getJSONArray("items");
                 JSONObject bookObject = bookArray.getJSONObject(0);
@@ -252,7 +276,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 //try for title
                 try{
                    // listingTitle = volumeObject.getString("title");
-                    titleText.setText("TITLE: "+volumeObject.getString("title"));
+                    titleText.setText("TITLE : "+volumeObject.getString("title"));
                 }
                 catch(JSONException jse){
                     titleText.setText("");
@@ -315,13 +339,16 @@ public class MainActivity extends Activity implements OnClickListener {
                 try{
                     boolean isEmbeddable = Boolean.parseBoolean
                             (bookObject.getJSONObject("accessInfo").getString("embeddable"));
-                    if(isEmbeddable) previewBtn.setEnabled(true);
-                    else previewBtn.setEnabled(false);
+                    previewBtn.setEnabled(true);
+
                 }
                 catch(JSONException jse){
                     previewBtn.setEnabled(false);
                     jse.printStackTrace();
                 }
+                //wrongBook button
+                wrongBook.setEnabled(true);
+
                 //link button
                 try{
                     linkBtn.setTag(volumeObject.getString("infoLink"));
@@ -352,6 +379,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 ratingCountText.setText("");
                 thumbView.setImageBitmap(null);
                 previewBtn.setVisibility(View.GONE);
+                wrongBook.setVisibility(View.GONE);
             }
         }
     }
@@ -388,11 +416,12 @@ public class MainActivity extends Activity implements OnClickListener {
         savedBundle.putString("author", ""+authorText.getText());
         savedBundle.putString("description", ""+descriptionText.getText());
         savedBundle.putString("date", ""+dateText.getText());
-        savedBundle.putString("ratings", ""+ratingCountText.getText());
+        savedBundle.putString("ratings", "" + ratingCountText.getText());
         savedBundle.putParcelable("thumbPic", thumbImg);
         if(starLayout.getTag()!=null)
             savedBundle.putInt("stars", Integer.parseInt(starLayout.getTag().toString()));
         savedBundle.putBoolean("isEmbed", previewBtn.isEnabled());
+        savedBundle.putBoolean("incorrect", wrongBook.isEnabled());
         savedBundle.putInt("isLink", linkBtn.getVisibility());
         if(previewBtn.getTag()!=null)
             savedBundle.putString("isbn", previewBtn.getTag().toString());

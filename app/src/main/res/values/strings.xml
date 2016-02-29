@@ -59,9 +59,12 @@
 
     <string name="scan">Scan a Book</string>
     <string name="thumb">Book Thumbnail</string>
-    <string name="pre">Preview</string>
-    <string name="link">Web</string>
+    <string name="link">More Info</string>
     <string name="title_activity_item_summary">ItemSummary</string>>
+    <string name="verifyBook">Is this the correct book?</string>
+    <string name="pre">Yes</string>
+    <string name="wrongBook">No</string>
+
 
 
 </resources>
