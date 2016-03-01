@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.R;
 
 import org.postgresql.core.Utils;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -162,6 +163,7 @@ public class AddListings extends AppCompatActivity {
         final TextView isbnTV = (TextView) findViewById(R.id.ISBNTV);
         final TextView itemDescriptionTV = (TextView) findViewById(R.id.DescriptionTV);
 
+
         final EditText isbnET = (EditText) findViewById(R.id.ISBNET);
         addImage = (ImageView) findViewById(R.id.addImageIV);
 
@@ -286,13 +288,14 @@ public class AddListings extends AppCompatActivity {
                     isbnTV.setEnabled(true);
                     itemDescriptionET.setMaxLines(1);
                     itemDescriptionET.setInputType(1);
+
                     itemDescriptionTV.setText("Author(s): ");
                     itemNameET.setText(tgetTitle.replace("TITLE :", ""));
                     itemDescriptionET.setText(tgetAuthor.replace("AUTHOR(S):", ""));
                     isbnET.setText(tgetISBN);
                     categoryListSpinner.setSelection(2);
 
-                    //add thumbnail image from scanner//does not work yet
+                    //add thumbnail image from scanner
                     if(getIntent().hasExtra("byteArray")) {
                         //ImageView _imv= new ImageView(this);
                         Bitmap _bitmap = BitmapFactory.decodeByteArray(
@@ -304,6 +307,15 @@ public class AddListings extends AppCompatActivity {
 
                     }
 
+                }
+                else if(checkActivity.equals("fromMainActivity2")){
+                    isbnET.setEnabled(true);
+                    isbnTV.setEnabled(true);
+                    itemDescriptionET.setMaxLines(1);
+                    itemDescriptionET.setInputType(1);
+                    itemDescriptionTV.setText("Author(s): ");
+                    itemDescriptionET.setHint("Enter the author(s) here");
+                    categoryListSpinner.setSelection(2);
                 }
 
 

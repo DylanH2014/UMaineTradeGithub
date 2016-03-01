@@ -181,6 +181,7 @@ public class MainActivity extends Activity implements OnClickListener {
         //use intent to open AddListings class for manual item creation
         else if(v.getId()==R.id.wrongBook){
             Intent intent = new Intent(this, AddListings.class);
+            intent.putExtra("activityID", "fromMainActivity2");
             startActivity(intent);
         }
 
