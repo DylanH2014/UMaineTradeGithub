@@ -71,6 +71,7 @@ public class ListingsPage extends AppCompatActivity {
 
                 Intent newListingIntent = new Intent(ListingsPage.this, AddListings.class);
                 startActivity(newListingIntent);
+                finish();
 
             }
         });

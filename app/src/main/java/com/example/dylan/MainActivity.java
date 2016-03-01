@@ -266,6 +266,8 @@ public class MainActivity extends Activity implements OnClickListener {
         protected void onPostExecute(String result) {
             try{
                 //parse results
+                //scanBtn.setVisibility(View.INVISIBLE);
+                scanBtn.setEnabled(false);
                 verifyBook.setVisibility(View.VISIBLE);
                 previewBtn.setVisibility(View.VISIBLE);
                 wrongBook.setVisibility(View.VISIBLE);
