@@ -41,22 +41,18 @@ package com.example.dylan;
         import com.google.zxing.IntentIntegrator;
         import com.google.zxing.IntentResult;
 /**
- * This is demo code to accompany the Mobiletuts+ tutorial series:
- * - Android SDK: Create a Book Scanning App
- *
- * Sue Smith
- * May/ June 2013
+ *Dylan H.
  *
  */
 public class MainActivity extends Activity implements OnClickListener {
 
-    //scan, preview, link buttons
-    private Button scanBtn, previewBtn, linkBtn, linkToListingsBtn, wrongBook;
+    //scan, addToListing, link, wrongBook buttons
+    private Button scanBtn, previewBtn, linkBtn, wrongBook;
     //author, title, description, date and rating count text views
     private TextView authorText, titleText, descriptionText, dateText, ratingCountText, verifyBook;
     //layout for star rating
     private LinearLayout starLayout;
-    //thumbnail
+    //thumbnail image
     private ImageView thumbView;
     //star views
     private ImageView[] starViews;
@@ -75,7 +71,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
 
-        //preview and link buttons
+        //addToListing, link, yes, no buttons
         previewBtn = (Button)findViewById(R.id.preview_btn);
         previewBtn.setVisibility(View.GONE);
         previewBtn.setOnClickListener(this);
@@ -90,12 +86,8 @@ public class MainActivity extends Activity implements OnClickListener {
         verifyBook=(TextView)findViewById(R.id.verification);
 
 
-        //linkToListingsBtn = (Button) findViewById(R.id.link_to_listings);
-        //linkToListingsBtn.setVisibility(View.GONE);
-       // linkToListingsBtn.setOnClickListener(this);
 
-
-        //ui items
+        //UI items
         authorText = (TextView)findViewById(R.id.book_author);
         titleText = (TextView)findViewById(R.id.book_title);
         descriptionText = (TextView)findViewById(R.id.book_description);
@@ -120,10 +112,6 @@ public class MainActivity extends Activity implements OnClickListener {
             dateText.setText(savedInstanceState.getString("date"));
             ratingCountText.setText(savedInstanceState.getString("ratings"));
 
-            //listingAuthor = savedInstanceState.getString("author");
-           // Toast.makeText(MainActivity.this, listingAuthor, Toast.LENGTH_SHORT).show();
-            //listingTitle = savedInstanceState.getString("title");
-            //Toast.makeText(MainActivity.this, listingTitle, Toast.LENGTH_SHORT).show();
 
             //listingDesc = savedInstanceState.getString("description");
             Toast.makeText(MainActivity.this, listingAuthor+listingDesc+listingTitle, Toast.LENGTH_SHORT).show();
@@ -158,6 +146,7 @@ public class MainActivity extends Activity implements OnClickListener {
             //start scanning
             scanIntegrator.initiateScan();
         }
+        //link to google books info for scanned textbook
         else if(v.getId()==R.id.link_btn){
             //get the url tag
             String tag = (String)v.getTag();
@@ -166,13 +155,11 @@ public class MainActivity extends Activity implements OnClickListener {
             webIntent.setData(Uri.parse(tag));
             startActivity(webIntent);
         }
+        //use intent to send textbook information to AddListings class
         else if(v.getId()==R.id.preview_btn){
             String tag = (String)v.getTag();
-            //launch preview
-            //Intent intent = new Intent(this, EmbeddedBook.class);
-            //intent.putExtra("isbn", tag);
-            //startActivity(intent);
 
+            //push textbook info to AddListings class
             Intent intent = new Intent(this, AddListings.class);
             intent.putExtra("isbn", tag);
             intent.putExtra("activityID", "fromMainActivity");
@@ -181,20 +168,20 @@ public class MainActivity extends Activity implements OnClickListener {
             intent.putExtra("description", descriptionText.getText().toString());
 
             //send the thumbnail image to addListings class
-            Bitmap _bitmap = thumbImg; // your bitmap
+            Bitmap _bitmap = thumbImg;
             ByteArrayOutputStream _bs = new ByteArrayOutputStream();
             _bitmap.compress(Bitmap.CompressFormat.PNG, 50, _bs);
             intent.putExtra("byteArray", _bs.toByteArray());
 
 
-
+            //begin the intent
             startActivity(intent);
-        //if book isn't correct, open listings page for manual input
+
         }
+        //use intent to open AddListings class for manual item creation
         else if(v.getId()==R.id.wrongBook){
             Intent intent = new Intent(this, AddListings.class);
             startActivity(intent);
-            //Toast.makeText(MainActivity.this, "Not the correct book", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -204,7 +191,7 @@ public class MainActivity extends Activity implements OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //retrieve result of scanning - instantiate ZXing object
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        //check we have a valid result
+        //check for a valid result
         if (scanningResult != null) {
             //get content from Intent Result
             String scanContent = scanningResult.getContents();
@@ -213,13 +200,15 @@ public class MainActivity extends Activity implements OnClickListener {
             Log.v("SCAN", "content: "+scanContent+" - format: "+scanFormat);
             if(scanContent!=null && scanFormat!=null && scanFormat.equalsIgnoreCase("EAN_13")){
                 previewBtn.setTag(scanContent);
+                //google books API
+                String key = "AIzaSyD1oZ-hjgz-B79j6uj4IR63q8d3PSyRa7o";
                 String bookSearchString = "https://www.googleapis.com/books/v1/volumes?" +
-                        "q=isbn:"+scanContent+"&key=AIzaSyD1oZ-hjgz-B79j6uj4IR63q8d3PSyRa7o";
+                        "q=isbn:"+scanContent+"&key=" + key;
                 //fetch search results
                 new GetBookInfo().execute(bookSearchString);
             }
             else{
-                //not ean
+                //not ean format
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Not a valid scan!", Toast.LENGTH_SHORT);
                 toast.show();
@@ -233,7 +222,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     }
 
-    //class to fetch book info
+    //class to fetch book information
     private class GetBookInfo extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... bookURLs) {
@@ -266,7 +255,6 @@ public class MainActivity extends Activity implements OnClickListener {
         protected void onPostExecute(String result) {
             try{
                 //parse results
-                //scanBtn.setVisibility(View.INVISIBLE);
                 scanBtn.setEnabled(false);
                 verifyBook.setVisibility(View.VISIBLE);
                 previewBtn.setVisibility(View.VISIBLE);
@@ -275,16 +263,15 @@ public class MainActivity extends Activity implements OnClickListener {
                 JSONArray bookArray = resultObject.getJSONArray("items");
                 JSONObject bookObject = bookArray.getJSONObject(0);
                 JSONObject volumeObject = bookObject.getJSONObject("volumeInfo");
-                //try for title
+                //set title
                 try{
-                   // listingTitle = volumeObject.getString("title");
                     titleText.setText("TITLE : "+volumeObject.getString("title"));
                 }
                 catch(JSONException jse){
                     titleText.setText("");
                     jse.printStackTrace();
                 }
-                //author can be multiple
+                //set author(s) - can have multiple
                 StringBuilder authorBuild = new StringBuilder("");
                 try{
                     JSONArray authorArray = volumeObject.getJSONArray("authors");
@@ -292,7 +279,6 @@ public class MainActivity extends Activity implements OnClickListener {
                         if(a>0) authorBuild.append(", ");
                         authorBuild.append(authorArray.getString(a));
                     }
-                    //listingAuthor = authorBuild.toString();
                     authorText.setText("AUTHOR(S): "+authorBuild.toString());
 
                 }
@@ -300,15 +286,15 @@ public class MainActivity extends Activity implements OnClickListener {
                     authorText.setText("");
                     jse.printStackTrace();
                 }
-                //publication date
-                try{ dateText.setText("PUBLISHED: "+volumeObject.getString("publishedDate")); }
+                //set publication date
+                try{ dateText.setText("PUBLISHED: "+volumeObject.getString("publishedDate"));
+                }
                 catch(JSONException jse){
                     dateText.setText("");
                     jse.printStackTrace();
                 }
-                //book description
+                //set book description
                 try{
-                    //listingDesc = volumeObject.getString(volumeObject.getString("description"));
                     descriptionText.setText("DESCRIPTION: " + volumeObject.getString("description"));
 
                 }
@@ -316,7 +302,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     descriptionText.setText("");
                     jse.printStackTrace();
                 }
-                //star rating display
+                //set star rating display
                 try{
                     double decNumStars = Double.parseDouble(volumeObject.getString("averageRating"));
                     int numStars = (int)decNumStars;
@@ -331,7 +317,7 @@ public class MainActivity extends Activity implements OnClickListener {
                     starLayout.removeAllViews();
                     jse.printStackTrace();
                 }
-                //rating count
+                //set rating count
                 try{ ratingCountText.setText(" - "+volumeObject.getString("ratingsCount")+" ratings"); }
                 catch(JSONException jse){
                     ratingCountText.setText("");
@@ -348,10 +334,10 @@ public class MainActivity extends Activity implements OnClickListener {
                     previewBtn.setEnabled(false);
                     jse.printStackTrace();
                 }
-                //wrongBook button
+                //enable wrongBook button
                 wrongBook.setEnabled(true);
 
-                //link button
+                //set link button to visible
                 try{
                     linkBtn.setTag(volumeObject.getString("infoLink"));
                     linkBtn.setVisibility(View.VISIBLE);
@@ -386,7 +372,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     }
 
-    //class to fetch thumbnail
+    //class to fetch thumbnail image
     private class GetBookThumb extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... thumbURLs) {
@@ -408,7 +394,7 @@ public class MainActivity extends Activity implements OnClickListener {
             return "";
         }
         protected void onPostExecute(String result) {
-            //show the image
+            //show the thumbnail image
             thumbView.setImageBitmap(thumbImg);
         }
     }
