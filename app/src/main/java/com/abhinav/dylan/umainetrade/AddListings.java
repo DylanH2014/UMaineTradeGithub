@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+
+import java.io.FileOutputStream;
 import java.util.*;
 import android.os.Bundle;
 import android.os.Environment;
@@ -133,6 +135,8 @@ public class AddListings extends AppCompatActivity {
     public static byte[] imageBytes;
 
     File destination;
+    File outputDestination;
+
     String imagePath;
 
     public String getFinalImagePath() {
@@ -266,6 +270,8 @@ public class AddListings extends AppCompatActivity {
 
         String name =   dateToString(new Date(),"yyyy-MM-dd-hh-mm-ss");
         destination = new File(Environment.getExternalStorageDirectory(), name + ".jpg");
+        outputDestination = new File(Environment.getExternalStorageDirectory(), name + "-output.jpg");
+
 
 
 
@@ -375,9 +381,23 @@ public class AddListings extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 10;
                 Bitmap bmp = BitmapFactory.decodeStream(in, null, options);
-                addImage.setImageBitmap(bmp);
-                imagePath = destination.getAbsolutePath();
-                setFinalImagePath(imagePath);
+                //addImage.setImageBitmap(bmp);
+
+
+
+                try {
+                    FileOutputStream out = new FileOutputStream(outputDestination);
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                    addImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, 500, 500, false));
+                    imagePath = outputDestination.getAbsolutePath();
+                    setFinalImagePath(imagePath);
+                    out.flush();
+                    out.close();
+                }catch (IOException e){
+
+                }
+
+
                 //Toast.makeText(AddListings.this, imagePath, Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

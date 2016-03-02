@@ -1,10 +1,15 @@
 package com.abhinav.dylan.umainetrade;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,7 +39,11 @@ public class LoginActivity extends AppCompatActivity {
     public static Context context;
     //private Pattern pattern;
     //private Matcher matcher;
-
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     private static final String EMAIL_PATTERN =
 
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*(@maine.edu|@umit.maine.edu)$";
@@ -64,6 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = getApplicationContext();
+
+
+
+        //verifyStoragePermissions(thisActivity);
         //Override policy to make app able to connect to internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -71,6 +84,15 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("UMaineTrade");
+
+
+            String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+
+            int permsRequestCode = 200;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(perms, permsRequestCode);
+            }
+
 
 
         final EditText emailET = (EditText) findViewById(R.id.EmailEditText);
@@ -180,6 +202,44 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+
+        switch(permsRequestCode){
+
+            case 200:
+
+                boolean writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+
+                break;
+
+        }
+
+    }
+
+    /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+
 
     protected void showInputDialog() {
 
