@@ -64,7 +64,8 @@
     <string name="verifyBook">Is this the correct book?</string>
     <string name="pre">Yes</string>
     <string name="wrongBook">No</string>
-
+    <string name="title_activity_tabbed_listings">TabbedListings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 
 </resources>

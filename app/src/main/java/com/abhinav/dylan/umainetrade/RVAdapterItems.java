@@ -62,8 +62,10 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ListingsPage.listingContext, "Recycle Click" + items.get(position).itemName, Toast.LENGTH_SHORT).show();
-                Intent viewItem = new Intent(ListingsPage.listingContext, ItemSummary.class);
+                //Toast.makeText(ListingsPage.listingContext, "Recycle Click" + items.get(position).itemName, Toast.LENGTH_SHORT).show();
+                //Intent viewItem = new Intent(ListingsPage.listingContext, ItemSummary.class);
+                Intent viewItem = new Intent(TabbedListings.tabbedContext, ItemSummary.class);
+
                 viewItem.putExtra("itemName", itemName);
                 viewItem.putExtra("itemPrice", itemPrice);
                 viewItem.putExtra("itemCondition", itemCondition);
@@ -75,7 +77,9 @@ public class RVAdapterItems extends RecyclerView.Adapter<RVAdapterItems.ItemView
                 viewItem.putExtra("byteArray", bs.toByteArray());
                 //viewItem.putExtra("itemImage", bmp);
                 viewItem.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ListingsPage.listingContext.startActivity(viewItem);
+                //ListingsPage.listingContext.startActivity(viewItem);
+                TabbedListings.tabbedContext.startActivity(viewItem);
+
             }
         });
     }

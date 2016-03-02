@@ -114,6 +114,7 @@ public class DBLogin {
 
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://10.0.3.2:5432/UMaineTrade", "abhinav",
+                   //  "jdbc:postgresql://141.114.247.66:5432/UMaineTrade", "abhinav",
                     "san123");
 
         } catch (SQLException e) {
@@ -330,54 +331,6 @@ public class DBLogin {
             fis.close();
         }
 
-        /*
-        if (connection != null) {
-            ResultSet rs;
-            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
-            try {
-                // All LargeObject API calls must be within a transaction block
-                connection.setAutoCommit(false);
-
-                // Get the Large Object Manager to perform operations with
-                LargeObjectManager lobj = ((org.postgresql.PGConnection)connection).getLargeObjectAPI();
-
-                // Create a new large object
-                long oid = lobj.createLO();
-
-                // Open the large object for writing
-                LargeObject obj = lobj.open(oid);
-
-                // Now open the file
-                               // Copy the data from the file to the large object
-                byte buf[] = new byte[2048];
-                int s, tl = 0;
-                while ((s = fis.read(buf, 0, 2048)) > 0) {
-                    obj.write(buf, 0, s);
-                    tl += s;
-                }
-
-                // Close the large object
-                obj.close();
-
-                // Now insert the row into imageslo
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO imageslo VALUES (?, ?)");
-                ps.setString(1, file.getName());
-                ps.setInt(2, (int) oid);
-                ps.executeUpdate();
-                ps.close();
-                fis.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        } else {
-            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
-        }
-*/
     }
 
     public byte[] getImage(int id) {
@@ -454,6 +407,97 @@ public class DBLogin {
 
     }
 
+    public ArrayList<Item> viewListings(int sqlCode){
+        Item sampleItem = null;
+        ArrayList<Item> listOfItems = new ArrayList<Item>();
+
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+
+            String itemName;
+            int itemPrice;
+            String itemOwner;
+            String itemCondition;
+            String itemCategory;
+            String itemDescription;
+            byte[] itemImage;
+
+            try {
+                PreparedStatement ps = null;
+                if(sqlCode==1){
+                     ps = connection
+                            .prepareStatement("select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                                    " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                                    " img.image as Byte, i.description as Description from items i \n" +
+                                    "left join users u on u.id = i.ownerid\n" +
+                                    "left join condition con on con.id = i.conditionid\n" +
+                                    "left join category cat on cat.id = i.categoryid\n" +
+                                    "left join image img on img.id = i.photoid");
+
+                }
+                else {
+                     ps = connection
+                            .prepareStatement("select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                                    " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                                    " img.image as Byte, i.description as Description from items i \n" +
+                                    "left join users u on u.id = i.ownerid\n" +
+                                    "left join condition con on con.id = i.conditionid\n" +
+                                    "left join category cat on cat.id = i.categoryid\n" +
+                                    "left join image img on img.id = i.photoid WHERE cat.category = ?");
+                }
+                switch (sqlCode){
+                    case 2:
+                        ps.setString(1, "Electronics");
+                        break;
+                    case 3:
+                        ps.setString(1, "Furniture");
+                        break;
+                    case 4:
+                        ps.setString(1, "Clothing");
+                        break;
+                    case 5:
+                        ps.setString(1, "Textbooks");
+                        break;
+                    case 6:
+                        ps.setString(1, "Miscellaneous");
+                        break;
+
+                }
+
+
+
+                rs = ps.executeQuery();
+
+                while(rs.next()){
+                    itemName = rs.getString("itemname");
+                    itemPrice = rs.getInt("price");
+                    itemCondition = rs.getString("condition");
+                    itemCategory = rs.getString("category");
+                    itemOwner = rs.getString("itemowner");
+                    itemImage = rs.getBytes("byte");
+                    itemDescription = rs.getString("description");
+                    sampleItem = new Item(itemName, itemPrice, itemCondition, itemCategory, itemOwner, itemImage, itemDescription);
+                    listOfItems.add(sampleItem);
+                }
+
+                //connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+
+        return listOfItems;
+    }
 
 
 
@@ -484,6 +528,63 @@ public class DBLogin {
                         "left join condition con on con.id = i.conditionid\n" +
                         "left join category cat on cat.id = i.categoryid\n" +
                         "left join image img on img.id = i.photoid ";
+                rs = stmt.executeQuery(query);
+
+                while(rs.next()){
+                    itemName = rs.getString("itemname");
+                    itemPrice = rs.getInt("price");
+                    itemCondition = rs.getString("condition");
+                    itemCategory = rs.getString("category");
+                    itemOwner = rs.getString("itemowner");
+                    itemImage = rs.getBytes("byte");
+                    itemDescription = rs.getString("description");
+                    sampleItem = new Item(itemName, itemPrice, itemCondition, itemCategory, itemOwner, itemImage, itemDescription);
+                    listOfItems.add(sampleItem);
+                }
+
+                //connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+
+        return listOfItems;
+    }
+
+    public ArrayList<Item> viewElectronics(){
+        Item sampleItem = null;
+        ArrayList<Item> listOfItems = new ArrayList<Item>();
+
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+
+            String itemName;
+            int itemPrice;
+            String itemOwner;
+            String itemCondition;
+            String itemCategory;
+            String itemDescription;
+            byte[] itemImage;
+
+            try {
+                stmt = connection.createStatement();
+                String query = "select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                        " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                        " img.image as Byte, i.description as Description from items i \n" +
+                        "left join users u on u.id = i.ownerid\n" +
+                        "left join condition con on con.id = i.conditionid\n" +
+                        "left join category cat on cat.id = i.categoryid\n" +
+                        "left join image img on img.id = i.photoid WHERE cat.category = 'Electronics'";
                 rs = stmt.executeQuery(query);
 
                 while(rs.next()){

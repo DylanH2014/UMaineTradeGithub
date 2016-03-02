@@ -161,6 +161,7 @@ public class AddListings extends AppCompatActivity {
         final EditText itemPriceET = (EditText) findViewById(R.id.ItemPriceET);
         final EditText itemDescriptionET = (EditText) findViewById(R.id.itemDescriptionET);
         final TextView isbnTV = (TextView) findViewById(R.id.ISBNTV);
+        isbnTV.setEnabled(false);
         final TextView itemDescriptionTV = (TextView) findViewById(R.id.DescriptionTV);
 
 
@@ -228,25 +229,38 @@ public class AddListings extends AppCompatActivity {
                     login.addImage(byteImage);
                     setPhotoId(login.getImageId(byteImage));
 
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException | NullPointerException e) {
+                    Toast.makeText(getApplicationContext(), "Please take a photo of the item.", Toast.LENGTH_SHORT).show();
+
                     e.printStackTrace();
                 }
-                setItemName(itemNameET.getText().toString());
-                setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
-                setItemOwnerId(ownerId);
-                setItemDescription(itemDescriptionET.getText().toString());
+                try {
+                    setItemName(itemNameET.getText().toString());
+                    setItemPrice(Integer.parseInt(itemPriceET.getText().toString()));
+                    setItemOwnerId(ownerId);
+                    setItemDescription(itemDescriptionET.getText().toString());
+                    login.addListing(getItemName(), getItemPrice(), getItemCondition(), getPhotoId(), getItemCategory(), getItemOwnerId(), getItemDescription());
+
+                    //ListingsPage.adapter.notifyDataSetChanged();
+                    //Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
+
+                    finish();
+                }
+                catch (NullPointerException e){
+                    Toast.makeText(getApplicationContext(), "Please fill out all the fields.", Toast.LENGTH_SHORT).show();
+
+                }
+                catch (NumberFormatException e){
+                    Toast.makeText(getApplicationContext(), "Please enter price in numbers.", Toast.LENGTH_SHORT).show();
+
+                }
 
 
 
                 //File file = new File(getFinalImagePath());
 
 
-                login.addListing(getItemName(), getItemPrice(), getItemCondition(), getPhotoId(), getItemCategory(), getItemOwnerId(), getItemDescription());
 
-                ListingsPage.adapter.notifyDataSetChanged();
-                //Toast.makeText(getApplicationContext(), "Name: " + getItemName() + "Price: " + getItemPrice() + "Condition: " + getItemCondition() + "Category" + getItemCategory(), Toast.LENGTH_SHORT).show();
-
-                finish();
             }
         });
 

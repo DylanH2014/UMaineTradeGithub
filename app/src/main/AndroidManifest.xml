@@ -8,7 +8,7 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +29,7 @@
         <activity
             android:name=".abhinav.dylan.umainetrade.Signup"
             android:label="@string/title_activity_signup"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".example.dylan.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -42,12 +42,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".example.dylan.EmbeddedBook" />
-        <activity android:name=".abhinav.dylan.umainetrade.ListingsPage"></activity>
-        <activity android:name=".abhinav.dylan.umainetrade.AddListings"></activity>
+        <activity android:name=".abhinav.dylan.umainetrade.ListingsPage" />
+        <activity android:name=".abhinav.dylan.umainetrade.AddListings" />
         <activity
             android:name=".abhinav.dylan.umainetrade.ItemSummary"
             android:label="@string/title_activity_item_summary"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".abhinav.dylan.umainetrade.TabbedListings"
+            android:label="@string/title_activity_tabbed_listings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>

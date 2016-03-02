@@ -66,9 +66,6 @@ public class ListingsPage extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Do you want to create a new listing?", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-
                 Intent newListingIntent = new Intent(ListingsPage.this, AddListings.class);
                 startActivity(newListingIntent);
                 finish();
