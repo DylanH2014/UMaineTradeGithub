@@ -104,7 +104,7 @@
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@mipmap/photo1"
+        android:src="@mipmap/addimage"
         android:id="@+id/addImageIV"
 
         />
@@ -126,6 +126,7 @@
         android:layout_height="wrap_content"
         android:hint="ISBN"
         android:enabled="false"
+        android:visibility="gone"
         />
 
     <TextView
@@ -133,6 +134,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/DescriptionTV"
         android:text="@string/ItemDescriptionTV"
+        android:visibility="gone"
 
         />
 
@@ -160,6 +162,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/ClearButton"
         android:text="Clear Photo"
+        android:visibility="gone"
 
 
         />

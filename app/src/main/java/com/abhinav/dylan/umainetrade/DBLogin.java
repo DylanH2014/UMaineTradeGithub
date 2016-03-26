@@ -114,7 +114,7 @@ public class DBLogin {
 
             connection = DriverManager.getConnection(
                     //"jdbc:postgresql://10.0.3.2:5432/UMaineTrade", "abhinav",
-                     "jdbc:postgresql://141.114.247.66:5432/UMaineTrade", "abhinav",
+                     "jdbc:postgresql://192.168.43.228:5432/UMaineTrade", "abhinav",
                     "san123");
 
         } catch (SQLException e) {

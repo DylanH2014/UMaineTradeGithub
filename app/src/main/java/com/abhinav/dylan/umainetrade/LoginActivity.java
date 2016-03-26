@@ -86,12 +86,12 @@ public class LoginActivity extends AppCompatActivity {
         toolbar.setTitle("UMaineTrade");
 
 
-            String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+            //String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
-            int permsRequestCode = 200;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(perms, permsRequestCode);
-            }
+           // int permsRequestCode = 200;
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+              //  requestPermissions(perms, permsRequestCode);
+            //}
 
 
 
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (login.authenticate(getEmail(), getPassword())) {
                             Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
 
-                            Intent listingsPageIntent = new Intent(LoginActivity.this, ListingsPage.class);
+                            Intent listingsPageIntent = new Intent(LoginActivity.this, TabbedListings.class);
                             startActivity(listingsPageIntent);
 
                         } else {
