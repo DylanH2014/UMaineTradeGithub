@@ -114,7 +114,7 @@ public class DBLogin {
 
             connection = DriverManager.getConnection(
                     //"jdbc:postgresql://10.0.3.2:5432/UMaineTrade", "abhinav",
-                     "jdbc:postgresql://192.168.43.228:5432/UMaineTrade", "abhinav",
+                     "jdbc:postgresql://141.114.217.56:5432/UMaineTrade", "abhinav",
                     "san123");
 
         } catch (SQLException e) {
@@ -446,6 +446,98 @@ public class DBLogin {
                                     "left join condition con on con.id = i.conditionid\n" +
                                     "left join category cat on cat.id = i.categoryid\n" +
                                     "left join image img on img.id = i.photoid WHERE cat.category = ?");
+                }
+                switch (sqlCode){
+                    case 2:
+                        ps.setString(1, "Electronics");
+                        break;
+                    case 3:
+                        ps.setString(1, "Furniture");
+                        break;
+                    case 4:
+                        ps.setString(1, "Clothing");
+                        break;
+                    case 5:
+                        ps.setString(1, "Textbooks");
+                        break;
+                    case 6:
+                        ps.setString(1, "Miscellaneous");
+                        break;
+
+                }
+
+
+
+                rs = ps.executeQuery();
+
+                while(rs.next()){
+                    itemName = rs.getString("itemname");
+                    itemPrice = rs.getInt("price");
+                    itemCondition = rs.getString("condition");
+                    itemCategory = rs.getString("category");
+                    itemOwner = rs.getString("itemowner");
+                    itemImage = rs.getBytes("byte");
+                    itemDescription = rs.getString("description");
+                    sampleItem = new Item(itemName, itemPrice, itemCondition, itemCategory, itemOwner, itemImage, itemDescription);
+                    listOfItems.add(sampleItem);
+                }
+
+                //connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        } else {
+            Toast.makeText(LoginActivity.context, "Failed to make connection", Toast.LENGTH_SHORT).show();
+        }
+
+
+        return listOfItems;
+    }
+
+    public ArrayList<Item> viewListings(int sqlCode, String keyword){
+        Item sampleItem = null;
+        ArrayList<Item> listOfItems = new ArrayList<Item>();
+
+        if (connection != null) {
+            ResultSet rs;
+            //Toast.makeText(getApplicationContext(), "You made it", Toast.LENGTH_SHORT).show();
+            Statement stmt = null;
+
+            String itemName;
+            int itemPrice;
+            String itemOwner;
+            String itemCondition;
+            String itemCategory;
+            String itemDescription;
+            byte[] itemImage;
+
+            try {
+                PreparedStatement ps = null;
+                if(sqlCode==1){
+                    ps = connection
+                            .prepareStatement("select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                                    " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                                    " img.image as Byte, i.description as Description from items i \n" +
+                                    "left join users u on u.id = i.ownerid\n" +
+                                    "left join condition con on con.id = i.conditionid\n" +
+                                    "left join category cat on cat.id = i.categoryid\n" +
+                                    "left join image img on img.id = i.photoid where i.name like '%"+keyword+"%'" );
+
+                }
+                else {
+                    ps = connection
+                            .prepareStatement("select i.name AS ItemName, i.price as Price, con.condition as Condition,\n" +
+                                    " cat.category as Category,  u.firstname || ' ' || u.lastname as ItemOwner, \n" +
+                                    " img.image as Byte, i.description as Description from items i \n" +
+                                    "left join users u on u.id = i.ownerid\n" +
+                                    "left join condition con on con.id = i.conditionid\n" +
+                                    "left join category cat on cat.id = i.categoryid\n" +
+                                    "left join image img on img.id = i.photoid WHERE i.name like '%\"+keyword+\"%' AND cat.category = ?");
                 }
                 switch (sqlCode){
                     case 2:

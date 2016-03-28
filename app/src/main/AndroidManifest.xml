@@ -8,6 +8,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -50,11 +52,11 @@
         <activity
             android:name=".abhinav.dylan.umainetrade.TabbedListings"
             android:label="@string/title_activity_tabbed_listings"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".abhinav.dylan.umainetrade.SearchActivity"
+            android:label="@string/title_activity_search"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 
 </manifest>

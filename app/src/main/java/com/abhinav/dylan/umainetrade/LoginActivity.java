@@ -192,8 +192,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent signUpIntent = new Intent(LoginActivity.this, TabbedListings.class);
-                startActivity(signUpIntent);
+                Intent tabbedIntent = new Intent(LoginActivity.this, TabbedListings.class);
+                tabbedIntent.putExtra("activityID", "fromLoginToTabbed");
+                startActivity(tabbedIntent);
 
 
             }

@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.R;
 
@@ -52,7 +53,7 @@ public class TabbedListings extends AppCompatActivity {
     private ViewPager mViewPager;
 
     public static RVAdapterItems theAdapter;
-    private static List<Item> items;
+    public static List<Item> items;
     private static RecyclerView recyclerView;
     private int chooseSQL;
     public static Context tabbedContext;
@@ -105,7 +106,12 @@ public class TabbedListings extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+
+            //Toast.makeText(getApplicationContext(), "Search button", Toast.LENGTH_SHORT).show();
+            Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
+            startActivity(searchIntent);
+            finish();
             return true;
         }
 
@@ -152,13 +158,30 @@ public class TabbedListings extends AppCompatActivity {
             recyclerView.setLayoutManager(llm);
             DBLogin login = new DBLogin();
 
+            Intent currentIntent = getActivity().getIntent();
 
-            items = login.viewListings(section);
+            if (currentIntent != null && currentIntent.hasExtra("activityID")){
+
+                String checkActivity = currentIntent.getStringExtra("activityID");
+                if (checkActivity.equals("fromLoginToTabbed")){
+
+                    items = login.viewListings(section);
+                    theAdapter = new RVAdapterItems(items);
+                    recyclerView.setAdapter(theAdapter);
+                }
+                else if (checkActivity.equals("fromSearch")){
+
+                    String searchKeyword = currentIntent.getStringExtra("searchKeyword");
+
+                    items = login.viewListings(section, searchKeyword);
+                    theAdapter = new RVAdapterItems(items);
+                    recyclerView.setAdapter(theAdapter);
+
+                }
+
+            }
 
 
-
-            theAdapter = new RVAdapterItems(items);
-            recyclerView.setAdapter(theAdapter);
             return rootView;
         }
     }
