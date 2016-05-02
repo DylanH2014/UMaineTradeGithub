@@ -1,20 +1,12 @@
 package com.abhinav.dylan.umainetrade;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
+
 import android.widget.Toast;
 
-import org.postgresql.largeobject.LargeObject;
-import org.postgresql.largeobject.LargeObjectManager;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import BCrypt.BCrypt;
 import Data.Item;
@@ -114,7 +105,7 @@ public class DBLogin {
 
             connection = DriverManager.getConnection(
                     //"jdbc:postgresql://10.0.3.2:5432/UMaineTrade", "abhinav",
-                     "jdbc:postgresql://141.114.217.56:5432/UMaineTrade", "abhinav",
+                     "jdbc:postgresql://141.114.220.115:5432/UMaineTrade", "abhinav",
                     "san123");
 
         } catch (SQLException e) {

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class ItemSummary extends AppCompatActivity {
         final TextView itemDescriptionTV = (TextView) findViewById(R.id.itemSummaryDescription);
         final ImageView itemPhoto = (ImageView) findViewById(R.id.itemSummaryPhoto);
 
-        final Button goBack = (Button) findViewById(R.id.itemSummaryMessageSeller);
+        /*final Button goBack = (Button) findViewById(R.id.itemSummaryMessageSeller);
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +41,17 @@ public class ItemSummary extends AppCompatActivity {
                 startActivity(go);
             }
         });
+        */
 
+        final EditText commentsInput = (EditText) findViewById(R.id.EnterCommentsET);
+        final EditText commentsET = (EditText) findViewById(R.id.CommentsET);
+        final Button comment = (Button) findViewById(R.id.CommentButton);
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
 
