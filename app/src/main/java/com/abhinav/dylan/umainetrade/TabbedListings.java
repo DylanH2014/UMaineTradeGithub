@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.R;
+import com.example.dylan.MainActivity;
 
 import java.util.List;
 
@@ -114,6 +115,15 @@ public class TabbedListings extends AppCompatActivity {
             finish();
             return true;
         }
+         if(id == R.id.action_lightning){
+
+             //Toast.makeText(getApplicationContext(), "Search button", Toast.LENGTH_SHORT).show();
+             Intent textbookIntent = new Intent(getApplicationContext(), MainActivity.class);
+             startActivity(textbookIntent);
+             finish();
+             return true;
+
+         }
 
         return super.onOptionsItemSelected(item);
     }
@@ -177,6 +187,8 @@ public class TabbedListings extends AppCompatActivity {
                     theAdapter = new RVAdapterItems(items);
                     recyclerView.setAdapter(theAdapter);
 
+
+
                 }
 
             }
@@ -208,7 +220,7 @@ public class TabbedListings extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 6 total pages.
             return 6;
         }
 

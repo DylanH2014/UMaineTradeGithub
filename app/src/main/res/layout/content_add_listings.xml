@@ -115,8 +115,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ISBNTV"
-        android:text="ISBN"
-        android:enabled="false"
+        android:text="Description"
+        android:enabled="true"
 
         />
 

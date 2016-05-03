@@ -8,4 +8,14 @@
         android:icon="@drawable/ic_menu_search"
         android:title="@string/action_settings"
         app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/action_lightning"
+        android:orderInCategory="100"
+        android:icon="@drawable/lightning"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+
+
 </menu>

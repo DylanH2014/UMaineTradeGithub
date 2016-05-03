@@ -159,6 +159,7 @@ public class AddListings extends AppCompatActivity {
         //setSupportActionBar(toolbar);
 
         toolbar.setTitle("Add New Listing");
+        intent = getIntent();
 
         //Find UI elements
         final EditText itemNameET = (EditText) findViewById(R.id.ItemNameET);
@@ -229,9 +230,32 @@ public class AddListings extends AppCompatActivity {
             public void onClick(View v) {
                 DBLogin login = new DBLogin();
                 try {
-                    byte [] byteImage = ImageToByte(new File(getFinalImagePath()));
-                    login.addImage(byteImage);
-                    setPhotoId(login.getImageId(byteImage));
+                    if (intent != null && intent.hasExtra("activityID")){
+                        String checkActivity = intent.getStringExtra("activityID");
+                        if (checkActivity.equals("fromMainActivity")) {
+                            if(getIntent().hasExtra("byteArray")) {
+                                //ImageView _imv= new ImageView(this);
+
+
+                                byte [] byteImage = getIntent().getByteArrayExtra("byteArray");
+                                login.addImage(byteImage);
+                                setPhotoId(login.getImageId(byteImage));
+
+
+                            }
+
+
+                        }
+
+
+
+
+                    }
+                    else {
+                        byte[] byteImage = ImageToByte(new File(getFinalImagePath()));
+                        login.addImage(byteImage);
+                        setPhotoId(login.getImageId(byteImage));
+                    }
 
                 } catch (FileNotFoundException | NullPointerException e) {
                     Toast.makeText(getApplicationContext(), "Please take a photo of the item.", Toast.LENGTH_SHORT).show();
@@ -290,7 +314,7 @@ public class AddListings extends AppCompatActivity {
         });
 
 
-        intent = getIntent();
+        //intent = getIntent();
 
             if (intent != null && intent.hasExtra("activityID")) {
                 String checkActivity = intent.getStringExtra("activityID");
@@ -304,8 +328,8 @@ public class AddListings extends AppCompatActivity {
                 //Toast.makeText(AddListings.this, checkActivity, Toast.LENGTH_SHORT).show();
 
                 if (checkActivity.equals("fromMainActivity")) {
-                    isbnET.setEnabled(true);
-                    isbnTV.setEnabled(true);
+                    //isbnET.setEnabled(false);
+                    isbnTV.setText("Description");
                     itemDescriptionET.setMaxLines(1);
                     itemDescriptionET.setInputType(1);
 

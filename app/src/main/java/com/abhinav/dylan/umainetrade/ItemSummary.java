@@ -43,15 +43,6 @@ public class ItemSummary extends AppCompatActivity {
         });
         */
 
-        final EditText commentsInput = (EditText) findViewById(R.id.EnterCommentsET);
-        final EditText commentsET = (EditText) findViewById(R.id.CommentsET);
-        final Button comment = (Button) findViewById(R.id.CommentButton);
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 
 
