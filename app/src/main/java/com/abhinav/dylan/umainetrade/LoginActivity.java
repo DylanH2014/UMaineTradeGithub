@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String EMAIL_PATTERN =
 
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*(@maine.edu|@umit.maine.edu)$";
-           // "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*(@maine.edu|@umit.maine.edu)";
+
 
 
     public String getEmail() {
@@ -86,12 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         toolbar.setTitle("UMaineTrade");
 
 
-            //String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 
-           // int permsRequestCode = 200;
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-              //  requestPermissions(perms, permsRequestCode);
-            //}
 
 
 
@@ -127,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
 
                             Intent listingsPageIntent = new Intent(LoginActivity.this, TabbedListings.class);
+                            listingsPageIntent.putExtra("activityID", "fromLoginToTabbed");
                             startActivity(listingsPageIntent);
 
                         } else {

@@ -128,10 +128,7 @@ public class ListingsPage extends AppCompatActivity {
         DBLogin login = new DBLogin();
         //items.add(login.viewListings());
         items = login.viewListings();
-        //adapter.notifyDataSetChanged();
-        //items.add(new Item("Asus Laptop", 30, "New", "Electronics", "Abhinav", example, "Used Asus Laptop"));
-        //items.add(new Item("Heated Sofa", 100, "Used", "Furniture", R.mipmap.photo1, "Selling heated sofa"));
-        //items.add(new Item("Galaxy S3", 250, "Used", "Electronics", R.mipmap.photo1, "selling used phone"));
+
 
 
 
