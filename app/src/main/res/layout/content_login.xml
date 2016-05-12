@@ -44,20 +44,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/SignUpButton"
         android:text="@string/SignUpButtonText"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scan_button"
-        android:text="@string/scan"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TestListingPageButton"
-        android:text="Test Listings Page"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TestTabbedButton"
-        android:text="Test Tabbed Page"/>
+
 
 </LinearLayout>

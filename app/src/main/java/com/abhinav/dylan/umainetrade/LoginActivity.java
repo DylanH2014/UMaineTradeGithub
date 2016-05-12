@@ -97,10 +97,6 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = (Button) findViewById(R.id.LoginButton);
         Button forgotButton = (Button) findViewById(R.id.ForgotButton);
         Button signUpButton = (Button) findViewById(R.id.SignUpButton);
-        Button scanButton = (Button) findViewById(R.id.scan_button);
-        Button testing = (Button) findViewById(R.id.TestListingPageButton);
-        Button tabbed = (Button) findViewById(R.id.TestTabbedButton);
-
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -160,41 +156,10 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
 
-                Intent signUpIntent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(signUpIntent);
 
 
-            }
-        });
-        testing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                Intent signUpIntent = new Intent(LoginActivity.this, ListingsPage.class);
-                startActivity(signUpIntent);
-
-
-            }
-        });
-
-        tabbed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                Intent tabbedIntent = new Intent(LoginActivity.this, TabbedListings.class);
-                tabbedIntent.putExtra("activityID", "fromLoginToTabbed");
-                startActivity(tabbedIntent);
-
-
-            }
-        });
 
 
 
